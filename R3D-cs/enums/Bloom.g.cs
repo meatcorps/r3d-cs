@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_Bloom</c>
 /// </remarks>
-public enum Bloom
+public enum Bloom : uint
 {
     /// <summary>
     /// No bloom effect applied

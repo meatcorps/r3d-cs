@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Raylib-cs" Version="7.0.2"/>
+        <PackageReference Include="Raylib-cs" Version="8.1.0" ExcludeAssets="native" />
     </ItemGroup>
 
     <ItemGroup>

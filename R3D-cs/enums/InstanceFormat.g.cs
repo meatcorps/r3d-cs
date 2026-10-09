@@ -15,7 +15,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_InstanceFormat</c>
 /// </remarks>
-public enum InstanceFormat
+public enum InstanceFormat : uint
 {
     /// <summary>
     /// 32-bit floating-point component.

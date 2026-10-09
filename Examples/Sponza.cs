@@ -35,15 +35,11 @@ public static class Sponza
 
         // Setup lights
         var lights = new Light[2];
+        var shadows = new ShadowMap[2];
         for (var i = 0; i < 2; i++)
         {
-            lights[i] = R3D.CreateLight(LightType.Omni);
-            R3D.SetLightPosition(lights[i], new Vector3(i == 0 ? -5.0f : 5.0f, 5.0f, 0.0f));
-            R3D.SetShadowUpdateMode(lights[i], ShadowUpdateMode.Manual);
-            R3D.SetLightEnergy(lights[i], 8.0f);
-            R3D.SetLightRange(lights[i], 16.0f);
-            R3D.EnableShadow(lights[i]);
-            R3D.EnableLight(lights[i]);
+            lights[i] = R3D.CreateOmniLight(new Vector3(i == 0 ? -5.0f : 5.0f, 5.0f, 0.0f), 16.0f, Color.White, 4.0f);
+            shadows[i] = R3D.LoadShadowMap(LightType.Omni);
         }
 
         // Setup camera
@@ -101,13 +97,15 @@ public static class Sponza
 
                 // Draw Sponza model
                 R3D.Begin(camera);
+                    R3D.PushLightEx(lights[0], shadows[0], false);
+                    R3D.PushLightEx(lights[1], shadows[1], false);
                     R3D.DrawModel(sponza, Vector3.Zero, 1.0f);
                 R3D.End();
 
                 // Draw lights
                 BeginMode3D(camera);
-                    DrawSphere(R3D.GetLightPosition(lights[0]), 0.2f, Color.White);
-                    DrawSphere(R3D.GetLightPosition(lights[1]), 0.2f, Color.White);
+                    DrawSphere(lights[0].Position, 0.2f, Color.White);
+                    DrawSphere(lights[1].Position, 0.2f, Color.White);
                 EndMode3D();
 
                 // Display tonemapping
@@ -128,6 +126,10 @@ public static class Sponza
         }
 
         // Cleanup
+        for (var i = 0; i < 2; i++)
+        {
+            R3D.UnloadShadowMap(shadows[i]);
+        }
         R3D.UnloadModel(sponza, true);
         R3D.Close();
 

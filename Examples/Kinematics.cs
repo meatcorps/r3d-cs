@@ -31,12 +31,12 @@ public static class Kinematics
             env.Ambient.Map = ambient;
         });
 
-        var light = R3D.CreateLight(LightType.Dir);
-        R3D.SetLightDirection(light, new Vector3(-1, -1, -1));
-        R3D.SetLightRange(light, 16.0f);
-        R3D.EnableLight(light);
-        R3D.EnableShadow(light);
-        R3D.SetShadowDepthBias(light, 0.005f);
+
+        var light = R3D.CreateDirLight(new Vector3(-1, -1, -1), Color.White, 1f);
+        light.Range = 16f;
+
+        var shadow = R3D.LoadShadowMap(LightType.Dir);
+        shadow.DepthBias = 0.005f;
 
         // Load materials
         var baseAlbedo = R3D.LoadAlbedoMap("resources/images/placeholder.png", Color.White);
@@ -141,6 +141,7 @@ public static class Kinematics
             BeginDrawing();
                 ClearBackground(Color.Black);
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMeshPro(slopeMesh, slopeMat, slopeTransform);
                     R3D.DrawMesh(groundMesh, groundMat, Vector3.Zero, 1.0f);
                     R3D.DrawMesh(capsMesh, R3D.MATERIAL_BASE, CapsuleCenter(capsule), 1.0f);
@@ -150,6 +151,7 @@ public static class Kinematics
             EndDrawing();
         }
 
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMeshData(slopeMeshData);
         R3D.UnloadMesh(groundMesh);
         R3D.UnloadMesh(slopeMesh);

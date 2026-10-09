@@ -39,13 +39,12 @@ public static class VolumetricFog
         var material = R3D.GetDefaultMaterial();
 
         // Create a spot light shining through the columns to produce light shafts
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(-8, 10, 0), Vector3.Zero);
-        R3D.SetLightAngle(light, 15.0f, 30.0f);
-        R3D.SetLightRange(light, 32.0f);
-        R3D.SetLightEnergy(light, 6.0f);
-        R3D.EnableShadow(light);
-        R3D.EnableLight(light);
+        var light = R3D.CreateSpotLight(new Vector3(-8, 10, 0), Vector3.Normalize(Vector3.Zero - new Vector3(-8, 10, 0)), 32.0f, Color.White, 6.0f);
+
+        light.InnerCutOff = 15.0f;
+        light.OuterCutOff = 30.0f;
+
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
 
         // Setup camera
         var camera = new Camera3D
@@ -86,6 +85,7 @@ public static class VolumetricFog
                 ClearBackground(Color.Black);
 
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMesh(plane, material, Vector3.Zero, 1.0f);
                     for (var i = 0; i < NUM_COLUMNS; i++)
                         R3D.DrawMesh(column, material, new Vector3(0, 0, (i - (NUM_COLUMNS - 1) * 0.5f) * 2.5f), 1.0f);
@@ -102,6 +102,7 @@ public static class VolumetricFog
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMaterial(material);
         R3D.UnloadMesh(sphere);
         R3D.UnloadMesh(column);

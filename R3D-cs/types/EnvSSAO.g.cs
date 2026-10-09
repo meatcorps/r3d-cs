@@ -46,14 +46,6 @@ public struct EnvSSAO
     public float Power;
 
     /// <summary>
-    /// Fraction of screen height beyond which the sampling radius is clamped (default: 0.2)
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>maxRadius</c>
-    /// </remarks>
-    public float MaxRadius;
-
-    /// <summary>
     /// Sampling radius in world space (default: 1.0)
     /// </summary>
     /// <remarks>

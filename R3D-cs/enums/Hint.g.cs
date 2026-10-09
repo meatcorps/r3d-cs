@@ -13,7 +13,7 @@ namespace R3D_cs;
 /// Some hints may be clamped internally, accordingly to hardware limits.
 /// Native: <c>R3D_Hint</c>
 /// </remarks>
-public enum Hint
+public enum Hint : uint
 {
     /// <summary>
     /// Initial vertex capacity of the global VBO. Default: 65'536
@@ -56,20 +56,20 @@ public enum Hint
     ForwardLightPerMesh,
 
     /// <summary>
-    /// Max probes rendered simultaneously. Default: 8
+    /// Max illumination probes rendered simultaneously. Default: 32
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_Hint.R3D_HINT_PROBE_MAX_ACTIVE</c>
+    /// Native: <c>R3D_Hint.R3D_HINT_PROBE_ILLUMINATION_MAX_ACTIVE</c>
     /// </remarks>
-    ProbeMaxActive,
+    ProbeIlluminationMaxActive,
 
     /// <summary>
-    /// Probe capture cubemap face size (px). Default: 256
+    /// Max reflection probes rendered simultaneously. Default: 8
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_Hint.R3D_HINT_PROBE_CAPTURE_SIZE</c>
+    /// Native: <c>R3D_Hint.R3D_HINT_PROBE_REFLECTION_MAX_ACTIVE</c>
     /// </remarks>
-    ProbeCaptureSize,
+    ProbeReflectionMaxActive,
 
     /// <summary>
     /// Directional light shadow map size (px). Default: 4096

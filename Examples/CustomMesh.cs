@@ -49,9 +49,7 @@ public static class CustomMesh
         R3D.SetEnvironmentEx((ref env) => env.Ambient.Color = new Color(50, 50, 50, 255));
 
         // Create light
-        var light = R3D.CreateLight(LightType.Omni);
-        R3D.SetLightPosition(light, new Vector3(0, 3, 3));
-        R3D.EnableLight(light);
+        var light = R3D.CreateOmniLight(new Vector3(0, 3, 3), 100, Color.White, 1f);
 
         // Setup camera
         var camera = new Camera3D
@@ -70,6 +68,7 @@ public static class CustomMesh
                 ClearBackground(Color.RayWhite);
 
                 R3D.Begin(camera);
+                    R3D.PushLight(light);
                     R3D.DrawMesh(mesh, material, Vector3.Zero, 1.0f);
                 R3D.End();
 

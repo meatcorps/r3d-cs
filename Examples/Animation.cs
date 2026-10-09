@@ -60,11 +60,11 @@ public static class Animation
         R3D.UnmapInstances(instances, InstanceFlags.Position);
 
         // Setup lights with shadows
-        var light = R3D.CreateLight(LightType.Dir);
-        R3D.SetLightDirection(light, new Vector3(-1.0f, -1.0f, -1.0f));
-        R3D.EnableLight(light);
-        R3D.SetLightRange(light, 10.0f);
-        R3D.EnableShadow(light);
+        var light = R3D.CreateDirLight(new Vector3(-1.0f, -1.0f, -1.0f), Color.White, 1);
+        light.Range = 10;
+
+        var shadow = R3D.LoadShadowMap(LightType.Dir);
+        shadow.Softness = 2.0f;
 
         // Setup camera
         var camera = new Camera3D
@@ -86,6 +86,7 @@ public static class Animation
             BeginDrawing();
                 ClearBackground(Color.RayWhite);
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMesh(plane, R3D.MATERIAL_BASE, Vector3.Zero, 1.0f);
                     R3D.DrawAnimatedModel(model, modelPlayer, Vector3.Zero, 1.25f);
                     R3D.DrawAnimatedModelInstanced(model, modelPlayer, instances, 4);
@@ -94,6 +95,7 @@ public static class Animation
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadAnimationPlayer(modelPlayer);
         R3D.UnloadAnimationLib(modelAnims);
         R3D.UnloadModel(model, true);

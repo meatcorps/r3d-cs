@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_Tonemap</c>
 /// </remarks>
-public enum Tonemap
+public enum Tonemap : uint
 {
     /// <summary>
     /// Direct linear mapping (no compression)

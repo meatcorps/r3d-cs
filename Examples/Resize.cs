@@ -28,9 +28,7 @@ public static class Resize
         }
 
         // Set up directional light
-        var light = R3D.CreateLight(LightType.Dir);
-        R3D.SetLightDirection(light, new Vector3(0, 0, -1));
-        R3D.EnableLight(light);
+        var light = R3D.CreateDirLight(new Vector3(0, -1, 0), Color.White, 1f);
 
         // Setup camera
         var camera = new Camera3D
@@ -69,6 +67,7 @@ public static class Resize
 
                 // Draw spheres
                 R3D.Begin(camera);
+                    R3D.PushLight(light);
                     for (int i = 0; i < 5; i++) {
                         R3D.DrawMesh(sphere, materials[i], new Vector3((float)i - 2, 0, 0), 1.0f);
                     }

@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_AntiAliasingMode</c>
 /// </remarks>
-public enum AntiAliasingMode
+public enum AntiAliasingMode : uint
 {
     /// <summary>
     /// No anti-aliasing. Best performance, visible jagged edges.

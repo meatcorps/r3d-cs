@@ -24,7 +24,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_ScreenShaderStage</c>
 /// </remarks>
-public enum ScreenShaderStage
+public enum ScreenShaderStage : uint
 {
     /// <summary>
     /// Before built-in post-processing; advanced HDR scene stage.

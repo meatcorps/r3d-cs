@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_Projection</c>
 /// </remarks>
-public enum Projection
+public enum Projection : uint
 {
     /// <summary>
     /// Perspective projection.

@@ -25,10 +25,8 @@ public static class Basic
         R3D.SetEnvironmentEx((ref env) => env.Ambient.Color = new Color(10, 10, 10, 255));
 
         // Create light
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(0, 10, 5), Vector3.Zero);
-        R3D.EnableShadow(light);
-        R3D.EnableLight(light);
+        var light = R3D.CreateSpotLight(new Vector3(0, 10, 5), new Vector3(0, -1, -0.5f), 50f, Color.White, 1f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
 
         // Setup camera
         var camera = new Camera3D
@@ -48,6 +46,7 @@ public static class Basic
                 ClearBackground(Color.RayWhite);
 
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, false);
                     R3D.DrawMesh(plane, material, new Vector3(0, -0.5f, 0), 1.0f);
                     R3D.DrawMesh(sphere, material, Vector3.Zero, 1.0f);
                 R3D.End();
@@ -56,6 +55,7 @@ public static class Basic
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMesh(sphere);
         R3D.UnloadMesh(plane);
         R3D.Close();

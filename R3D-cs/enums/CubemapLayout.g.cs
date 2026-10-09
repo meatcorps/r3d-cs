@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_CubemapLayout</c>
 /// </remarks>
-public enum CubemapLayout
+public enum CubemapLayout : uint
 {
     /// <summary>
     /// Automatically detect layout type

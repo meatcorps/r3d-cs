@@ -19,7 +19,7 @@ public static class Transparency
         // Create cube model
         var cube = R3D.GenMeshCube(1, 1, 1);
         var matCube = R3D.MATERIAL_BASE;
-        matCube.TransparencyMode = TransparencyMode.Alpha;
+        matCube.TransparencyMode = TransparencyMode.Blend;
         matCube.Albedo.Color = new Color(150, 150, 255, 100);
         matCube.Orm.Occlusion = 1.0f;
         matCube.Orm.Roughness = 0.2f;
@@ -48,12 +48,14 @@ public static class Transparency
             FovY = 60
         };
 
-        // Setup lighting
+        // Setup environment
         R3D.SetEnvironmentEx((ref env) => env.Ambient.Color = new Color(10, 10, 10, 255));
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(0, 10, 5), Vector3.Zero);
-        R3D.EnableLight(light);
-        R3D.EnableShadow(light);
+
+        // Setup lighting
+        var light = R3D.CreateSpotLight(new Vector3(0, 10, 5), new Vector3(0, -1, -0.5f), 50.0f, Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
+        shadow.Softness = 4.0f;
+
 
         // Main loop
         while (!WindowShouldClose())
@@ -64,6 +66,7 @@ public static class Transparency
                 ClearBackground(Color.RayWhite);
 
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, false);
                     R3D.DrawMesh(plane, matPlane, new Vector3(0, -0.5f, 0), 1.0f);
                     R3D.DrawMesh(sphere, matSphere, Vector3.Zero, 1.0f);
                     R3D.DrawMesh(cube, matCube, Vector3.Zero, 1.0f);
@@ -73,6 +76,7 @@ public static class Transparency
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMesh(sphere);
         R3D.UnloadMesh(plane);
         R3D.UnloadMesh(cube);

@@ -16,19 +16,29 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Title>R3D-cs</Title>
-        <Description>.NET/C# bindings for r3d, an advanced 3D rendering library for raylib (built on raylib-cs)</Description>
-        <RepositoryUrl>https://github.com/graphnode/r3d-cs/</RepositoryUrl>
-        <Authors>r3d-cs</Authors>
+        <PackageId>Meatcorps.R3D-cs</PackageId>
+        <Title>R3D-cs - Meatcorps Fork</Title>
+
+        <Description>
+            Meatcorps fork of the .NET/C# bindings for r3d,
+            an advanced 3D rendering library for raylib.
+        </Description>
+
+        <RepositoryUrl>https://github.com/YOUR-ACCOUNT/r3d-cs/</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+        <Authors>r3d-cs;Meatcorps</Authors>
+
         <PackageLicenseExpression>Zlib</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>logo/r3d-cs_256x256.png</PackageIcon>
-        <PackageTags>raylib r3d csharp gamedev</PackageTags>
-        <PackageProjectUrl>https://www.raylib.com/</PackageProjectUrl>
-        <PackProject>true</PackProject>
+        <PackageTags>raylib r3d csharp gamedev meatcorps</PackageTags>
+
+        <PackageProjectUrl>https://github.com/YOUR-ACCOUNT/r3d-cs/</PackageProjectUrl>
+
+        <IsPackable>true</IsPackable>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <RepositoryType>git</RepositoryType>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
@@ -44,7 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Raylib-cs" Version="7.0.2"/>
+        <PackageReference Include="Raylib-cs" Version="8.1.0" ExcludeAssets="native" PrivateAssets="native" />
     </ItemGroup>
 
     <Import Project="./Build.props"/>

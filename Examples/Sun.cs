@@ -52,13 +52,10 @@ public static class Sun
         });
 
         // Create directional light with shadows
-        var light = R3D.CreateLight(LightType.Dir);
-        R3D.SetLightDirection(light, new Vector3(-1, -1, -1));
-        R3D.EnableLight(light);
-        R3D.SetLightRange(light, 16.0f);
-        R3D.SetShadowSoftness(light, 2.0f);
-        R3D.SetShadowDepthBias(light, 0.01f);
-        R3D.EnableShadow(light);
+        var light = R3D.CreateDirLight(new Vector3(-1, -1, -1), Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Dir);
+        shadow.Softness = 3.0f;
+
 
         // Setup camera
         var camera = new Camera3D
@@ -80,6 +77,7 @@ public static class Sun
             BeginDrawing();
                 ClearBackground(Color.RayWhite);
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMesh(plane, material, new Vector3(0, -0.5f, 0), 1.0f);
                     R3D.DrawMeshInstanced(sphere, material, instances, INSTANCE_COUNT);
                 R3D.End();
@@ -87,6 +85,7 @@ public static class Sun
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadInstanceBuffer(instances);
         R3D.UnloadMaterial(material);
         R3D.UnloadMesh(sphere);

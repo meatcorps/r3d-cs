@@ -24,7 +24,7 @@ public static unsafe partial class R3D
     /// </summary>
     public const string NativeLibName = "r3d";
 
-    public const string R3D_VERSION = "0.11.0";
+    public const string R3D_VERSION = "0.12.0-dev.175+0b69d37";
 
     /// <summary>
     /// Sets a configuration hint.
@@ -266,31 +266,5 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SetTextureWrap")]
     public static partial void SetTextureWrap(TextureWrap wrap);
-
-    /// <summary>
-    /// Set the working color space for user-provided surface colors and color textures.
-    /// <para>
-    /// Defines how all *color inputs* should be interpreted:
-    /// <list type="bullet">
-    /// <item><description>surface colors provided in materials (e.g. albedo/emission tints)</description></item>
-    /// <item><description>color textures such as albedo and emission maps</description></item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// When set to sRGB, these values are converted to linear before shading. When set to linear, values are used as-is.
-    /// </para>
-    /// <para>
-    /// This does NOT affect lighting inputs (direct or indirect light), which are always expected to be provided in linear space.
-    /// </para>
-    /// <para>
-    /// The default color space is `R3D_COLORSPACE_SRGB`.
-    /// </para>
-    /// </summary>
-    /// <param name="space">Color space to use for color inputs (linear or sRGB).</param>
-    /// <remarks>
-    /// Native: <c>R3D_SetColorSpace</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetColorSpace")]
-    public static partial void SetColorSpace(ColorSpace space);
 
 }

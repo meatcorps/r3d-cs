@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_ShadowCastMode</c>
 /// </remarks>
-public enum ShadowCastMode
+public enum ShadowCastMode : uint
 {
     /// <summary>
     /// The object casts shadows; the faces used are determined by the material's culling mode.

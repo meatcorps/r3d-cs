@@ -35,14 +35,14 @@ public static unsafe partial class R3D
     /// All allocated memory is zero-initialized.
     /// </para>
     /// </summary>
-    /// <param name="vertexCount">Number of vertices to allocate (capacity). Must be &gt; 0.</param>
-    /// <param name="indexCount">Number of indices to allocate (capacity). May be 0. If 0, no index buffer is allocated.</param>
+    /// <param name="vertexCapacity">Number of vertices to allocate. Must be &gt; 0.</param>
+    /// <param name="indexCapacity">Number of indices to allocate. May be 0. If 0, no index buffer is allocated.</param>
     /// <returns>A new R3D_MeshData with allocated buffers and zero element counts.</returns>
     /// <remarks>
     /// Native: <c>R3D_LoadMeshData</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_LoadMeshData")]
-    public static partial MeshData LoadMeshData(int vertexCount, int indexCount);
+    public static partial MeshData LoadMeshData(int vertexCapacity, int indexCapacity);
 
     /// <summary>
     /// Releases memory used by a mesh data container.
@@ -487,8 +487,6 @@ public static unsafe partial class R3D
     /// <param name="meshData">Mesh data to modify.</param>
     /// <param name="type">Primitive type of the mesh. Points and line primitives are not supported and will default to a front-facing tangent (1, 0, 0, 1).</param>
     /// <remarks>
-    /// <b>Warning:</b>
-    /// Not thread-safe: uses the shared global scratch stack
     /// Native: <c>R3D_GenMeshDataTangents</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GenMeshDataTangents")]

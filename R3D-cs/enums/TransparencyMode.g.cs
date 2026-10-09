@@ -4,37 +4,37 @@
 namespace R3D_cs;
 
 /// <summary>
-/// Transparency modes.
+/// Material transparency handling modes.
 /// <para>
-/// This enumeration defines how a material handles transparency during rendering. It controls whether transparency is disabled, rendered using a depth pre-pass, or rendered with standard alpha blending.
+/// Defines how material opacity and blending are processed during rendering.
 /// </para>
 /// </summary>
 /// <remarks>
 /// Native: <c>R3D_TransparencyMode</c>
 /// </remarks>
-public enum TransparencyMode
+public enum TransparencyMode : uint
 {
     /// <summary>
-    /// No transparency, supports alpha cutoff.
+    /// Fully opaque in G-Buffer (supports hard alpha cutoff/masking). Ignores blend mode.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_DISABLED</c>
+    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_OPAQUE</c>
     /// </remarks>
-    Disabled,
+    Opaque,
 
     /// <summary>
-    /// Supports transparency with shadows. Writes shadows for alpha &gt; 0.1 and depth for alpha &gt; 0.99.
+    /// Two-pass rendering: opaque cutoff in G-Buffer + forward blending.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_PREPASS</c>
+    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_HYBRID</c>
     /// </remarks>
-    Prepass,
+    Hybrid,
 
     /// <summary>
-    /// Standard transparency without shadows or depth writes.
+    /// Blended only (forward pass, no depth write / shadow casting).
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_ALPHA</c>
+    /// Native: <c>R3D_TransparencyMode.R3D_TRANSPARENCY_BLEND</c>
     /// </remarks>
-    Alpha,
+    Blend,
 }

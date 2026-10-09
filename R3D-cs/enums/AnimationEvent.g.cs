@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_AnimationEvent</c>
 /// </remarks>
-public enum AnimationEvent
+public enum AnimationEvent : uint
 {
     /// <summary>
     /// Animation has finished playing (non-looping).

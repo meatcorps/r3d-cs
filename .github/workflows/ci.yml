@@ -12,8 +12,12 @@ jobs:
         include:
           - os: windows-latest
             rid: win-x64
+
           - os: ubuntu-latest
             rid: linux-x64
+
+          - os: macos-latest
+            rid: osx-arm64
 
     runs-on: ${{ matrix.os }}
     name: Build native (${{ matrix.rid }})
@@ -49,13 +53,30 @@ jobs:
         if: matrix.rid == 'win-x64'
         run: choco install ninja -y
 
+      - name: Install deps (macOS)
+        if: matrix.rid == 'osx-arm64'
+        run: brew install ninja
+
       # --- CMake configure & build ---
 
       - name: CMake configure
+        if: matrix.rid != 'osx-arm64'
         run: >
           cmake -S External/r3d -B External/r3d/build
           -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DBUILD_SHARED_LIBS=ON
+          -DR3D_RAYLIB_VENDORED=ON
+          -DR3D_ASSIMP_VENDORED=ON
+          -DR3D_BUILD_EXAMPLES=OFF
+
+      - name: CMake configure (macOS arm64)
+        if: matrix.rid == 'osx-arm64'
+        run: >
+          cmake -S External/r3d -B External/r3d/build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_OSX_ARCHITECTURES=arm64
           -DBUILD_SHARED_LIBS=ON
           -DR3D_RAYLIB_VENDORED=ON
           -DR3D_ASSIMP_VENDORED=ON
@@ -72,10 +93,12 @@ jobs:
         run: |
           $staging = "staging/runtimes/win-x64/native"
           New-Item -ItemType Directory -Force -Path $staging
+
           Get-ChildItem -Path External/r3d/build -Recurse -Include "*.dll" | ForEach-Object {
             Write-Host "Copying $($_.FullName)"
             Copy-Item $_.FullName -Destination $staging
           }
+
           Write-Host "--- Staged files ---"
           Get-ChildItem $staging
 
@@ -92,9 +115,11 @@ jobs:
 
           # Rename versioned sonames to unversioned
           cd "$staging"
+
           for f in *.so.*; do
             [ -e "$f" ] || continue
             base="${f%%\.so\.*}.so"
+
             echo "Renaming $f -> $base"
             mv "$f" "$base"
           done
@@ -102,11 +127,13 @@ jobs:
           # Fix sonames and NEEDED entries with patchelf
           for lib in *.so; do
             echo "Patching $lib"
+
             patchelf --set-soname "$lib" "$lib"
-            # Fix any versioned NEEDED entries
+
             patchelf --print-needed "$lib" | while read -r needed; do
               if [[ "$needed" == *.so.* ]]; then
                 clean="${needed%%\.so\.*}.so"
+
                 echo "  Replacing NEEDED $needed -> $clean"
                 patchelf --replace-needed "$needed" "$clean" "$lib"
               fi
@@ -115,6 +142,86 @@ jobs:
 
           echo "--- Staged files ---"
           ls -la
+
+      - name: Stage native libs (macOS)
+        if: matrix.rid == 'osx-arm64'
+        run: |
+          staging="staging/runtimes/osx-arm64/native"
+          mkdir -p "$staging"
+
+          normalize_name() {
+            echo "$1" | sed -E \
+              's/(\.[0-9]+)+\.dylib$/.dylib/; s/\.dylib(\.[0-9]+)+$/.dylib/'
+          }
+
+          # Copy dylibs while normalizing versioned names.
+          #
+          # Examples:
+          #   libassimp.6.dylib -> libassimp.dylib
+          #   libfoo.dylib.5    -> libfoo.dylib
+          find External/r3d/build -name '*.dylib*' -type f | while read -r lib; do
+            filename="$(basename "$lib")"
+            target="$(normalize_name "$filename")"
+
+            echo "Copying $filename -> $target"
+            cp -f "$lib" "$staging/$target"
+          done
+
+          cd "$staging"
+
+          # Make all bundled dylibs relocatable.
+          for lib in *.dylib; do
+            [ -e "$lib" ] || continue
+
+            echo "Patching $lib"
+
+            install_name_tool \
+              -id "@loader_path/$lib" \
+              "$lib"
+
+            # Rewrite dependencies that refer to another dylib bundled
+            # in this runtime directory.
+            otool -L "$lib" | tail -n +2 | awk '{print $1}' | while read -r dep; do
+              dep_base="$(basename "$dep")"
+              dep_target="$(normalize_name "$dep_base")"
+
+              if [ -f "$dep_target" ]; then
+                wanted="@loader_path/$dep_target"
+
+                if [ "$dep" != "$wanted" ]; then
+                  echo "  $dep -> $wanted"
+
+                  install_name_tool \
+                    -change "$dep" \
+                    "$wanted" \
+                    "$lib"
+                fi
+              fi
+            done
+          done
+
+          echo "--- Staged files ---"
+          ls -la
+
+          echo "--- Architectures ---"
+          for lib in *.dylib; do
+            [ -e "$lib" ] || continue
+            file "$lib"
+
+            if ! file "$lib" | grep -q arm64; then
+              echo "ERROR: $lib is not arm64"
+              exit 1
+            fi
+          done
+
+          echo "--- Linked libraries ---"
+          for lib in *.dylib; do
+            [ -e "$lib" ] || continue
+
+            echo
+            echo "$lib:"
+            otool -L "$lib"
+          done
 
       - name: Upload native artifact
         uses: actions/upload-artifact@v4
@@ -155,19 +262,26 @@ jobs:
         id: version
         shell: bash
         run: |
-          # Strip the leading 'v' from the tag (e.g. v0.8.1 -> 0.8.1)
           TAG_VERSION="${GITHUB_REF#refs/tags/v}"
-          # PackageVersion supports full SemVer 2.0 with +metadata
-          # Version (assembly) needs just the numeric part
+
           echo "package_version=$TAG_VERSION" >> "$GITHUB_OUTPUT"
           echo "version=${TAG_VERSION%%[-+]*}" >> "$GITHUB_OUTPUT"
           echo "Publishing version: $TAG_VERSION"
 
       - name: Build
-        run: dotnet build R3D-cs/R3D-cs.csproj -c Release -p:Version=${{ steps.version.outputs.version }} -p:PackageVersion=${{ steps.version.outputs.package_version }}
+        run: >
+          dotnet build R3D-cs/R3D-cs.csproj
+          -c Release
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:PackageVersion=${{ steps.version.outputs.package_version }}
 
       - name: Pack
-        run: dotnet pack R3D-cs/R3D-cs.csproj -c Release -p:Version=${{ steps.version.outputs.version }} -p:PackageVersion=${{ steps.version.outputs.package_version }} -o artifacts/
+        run: >
+          dotnet pack R3D-cs/R3D-cs.csproj
+          -c Release
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:PackageVersion=${{ steps.version.outputs.package_version }}
+          -o artifacts/
 
       - name: Upload NuGet package
         uses: actions/upload-artifact@v4
@@ -177,4 +291,8 @@ jobs:
 
       - name: Publish to NuGet
         if: startsWith(github.ref, 'refs/tags/v')
-        run: dotnet nuget push artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: >
+          dotnet nuget push artifacts/*.nupkg
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

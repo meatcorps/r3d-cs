@@ -43,7 +43,7 @@ public static class Stencil
         matXrayGhost.Depth.Mode = CompareMode.Always;
         matXrayGhost.Stencil.Mode = CompareMode.Notequal;
         matXrayGhost.Stencil.Ref = 0x01;
-        matXrayGhost.TransparencyMode = TransparencyMode.Alpha;
+        matXrayGhost.TransparencyMode = TransparencyMode.Blend;
         matXrayGhost.Unlit = true;
 
         // Main outline sphere material.
@@ -68,11 +68,9 @@ public static class Stencil
         // Configure lighting, shadows, and ambient color
         R3D.SetEnvironmentEx((ref env) => env.Ambient.Color = new Color(10, 10, 15, 255));
 
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(4, 8, 5), Vector3.Zero);
-        R3D.SetShadowSoftness(light, 8.0f);
-        R3D.EnableLight(light);
-        R3D.EnableShadow(light);
+        var light = R3D.CreateSpotLight(new Vector3(4, 8, 5), new Vector3(-4, -8, -5), 16.0f, Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
+        shadow.Softness = 8.0f;
 
         var camera = new Camera3D
         {
@@ -90,6 +88,7 @@ public static class Stencil
                 ClearBackground(Color.Black);
 
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, false);
                     // Base scene geometry
                     R3D.DrawMesh(plane, matGround, new Vector3(0.0f, -0.5f, 0.0f), 1.0f);
                     R3D.DrawMesh(box, matWall, new Vector3(0.0f, 0.5f, 0.0f), 1.0f);
@@ -105,6 +104,7 @@ public static class Stencil
             EndDrawing();
         }
 
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMesh(sphere);
         R3D.UnloadMesh(box);
         R3D.UnloadMesh(plane);

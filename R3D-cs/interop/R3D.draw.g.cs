@@ -106,6 +106,54 @@ public static unsafe partial class R3D
     public static partial void EndCluster();
 
     /// <summary>
+    /// Queues a light to be rendered for the current frame, without shadows.
+    /// <para>
+    /// The light is submitted for rendering during R3D_End(), and must be pushed again on every frame between R3D_Begin() and R3D_End() to remain visible.
+    /// </para>
+    /// </summary>
+    /// <param name="light">The light data to submit (see R3D_Light).</param>
+    /// <remarks>
+    /// Native: <c>R3D_PushLight</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PushLight")]
+    public static partial void PushLight(Light light);
+
+    /// <summary>
+    /// Queues a light to be rendered for the current frame, with an associated shadow map.
+    /// <para>
+    /// The light is submitted for rendering during R3D_End(), and must be pushed again on every frame between R3D_Begin() and R3D_End() to remain visible.
+    /// </para>
+    /// <para>
+    /// The shadow map is re-rendered whenever updateShadow is true, or when it has never been rendered before (so static lights can safely pass false from the start and still get valid shadows). This happens even if the light is currently off-screen, so you can safely ignore visibility when driving updateShadow, or factor it in yourself if you want to defer updates for off-screen lights.
+    /// </para>
+    /// </summary>
+    /// <param name="light">The light data to submit (see R3D_Light).</param>
+    /// <param name="map">The shadow map to associate with this light for this frame.</param>
+    /// <param name="updateShadow">Whether the shadow map should be re-rendered this frame. If false, the previously rendered content is reused instead.</param>
+    /// <remarks>
+    /// Native: <c>R3D_PushLightEx</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PushLightEx")]
+    public static partial void PushLightEx(Light light, ShadowMap map, [MarshalAs(UnmanagedType.I1)] bool updateShadow);
+
+    /// <summary>
+    /// Queues a probe to be rendered for the current frame.
+    /// <para>
+    /// The probe is submitted for rendering during R3D_End(), and must be pushed again on every frame between R3D_Begin() and R3D_End() to remain active.
+    /// </para>
+    /// <para>
+    /// The probe is re-captured whenever updateProbe is true, or when it has never been captured before (so static probes can safely pass false from the start and still get valid data). This happens even if the probe is currently off-screen, so you can safely ignore visibility when driving updateProbe, or factor it in yourself if you want to defer updates for off-screen probes.
+    /// </para>
+    /// </summary>
+    /// <param name="probe">The probe data to submit (see R3D_Probe).</param>
+    /// <param name="updateProbe">Whether the probe's capture should be re-rendered this frame. If false, the previously captured content is reused instead.</param>
+    /// <remarks>
+    /// Native: <c>R3D_PushProbe</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PushProbe")]
+    public static partial void PushProbe(Probe probe, [MarshalAs(UnmanagedType.I1)] bool updateProbe);
+
+    /// <summary>
     /// Queues a mesh draw command with position and uniform scale.
     /// <para>
     /// The command is executed during R3D_End().
@@ -193,6 +241,36 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawMeshInstancedPro")]
     public static partial void DrawMeshInstancedPro(Mesh mesh, Material material, InstanceBuffer instances, int offset, int count, Matrix4x4 transform);
+
+    /// <summary>
+    /// Queues an animated mesh draw command.
+    /// <para>
+    /// Uses the provided animation player for GPU skinning.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedMesh</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMesh")]
+    public static partial void DrawAnimatedMesh(Mesh mesh, Material material, AnimationPlayer player, Vector3 position, float scale);
+
+    /// <summary>
+    /// Queues an animated mesh draw command with rotation and non-uniform scale.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedMeshEx</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshEx")]
+    public static partial void DrawAnimatedMeshEx(Mesh mesh, Material material, AnimationPlayer player, Vector3 position, Quaternion rotation, Vector3 scale);
+
+    /// <summary>
+    /// Queues an animated mesh draw command using a full transform matrix.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedMeshPro</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshPro")]
+    public static partial void DrawAnimatedMeshPro(Mesh mesh, Material material, AnimationPlayer player, Matrix4x4 transform);
 
     /// <summary>
     /// Queues a model draw command with position and uniform scale.

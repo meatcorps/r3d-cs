@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_StencilOp</c>
 /// </remarks>
-public enum StencilOp
+public enum StencilOp : uint
 {
     /// <summary>
     /// Keep the current stencil value

@@ -95,37 +95,37 @@ public static unsafe partial class R3D
     /// Returns the camera projection matrix.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_GetCameraProj</c>
+    /// Native: <c>R3D_GetCameraProjection</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraProj")]
-    public static partial Matrix4x4 GetCameraProj(Camera camera, double aspect);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraProjection")]
+    public static partial Matrix4x4 GetCameraProjection(Camera camera, double aspect);
 
     /// <summary>
     /// Returns the combined view-projection matrix.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_GetCameraViewProj</c>
+    /// Native: <c>R3D_GetCameraViewProjection</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraViewProj")]
-    public static partial Matrix4x4 GetCameraViewProj(Camera camera, double aspect);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraViewProjection")]
+    public static partial Matrix4x4 GetCameraViewProjection(Camera camera, double aspect);
 
     /// <summary>
     /// Moves the camera in world space.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_MoveCamera</c>
+    /// Native: <c>R3D_CameraMove</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_MoveCamera")]
-    public static partial void MoveCamera(ref Camera camera, Vector3 delta);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_CameraMove")]
+    public static partial void CameraMove(ref Camera camera, Vector3 delta);
 
     /// <summary>
     /// Moves the camera in local space.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_MoveCameraLocal</c>
+    /// Native: <c>R3D_CameraMoveLocal</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_MoveCameraLocal")]
-    public static partial void MoveCameraLocal(ref Camera camera, Vector3 delta);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_CameraMoveLocal")]
+    public static partial void CameraMoveLocal(ref Camera camera, Vector3 delta);
 
     /// <summary>
     /// Rotates the camera using a quaternion.

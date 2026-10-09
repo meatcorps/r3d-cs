@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_FrustumPlane</c>
 /// </remarks>
-public enum FrustumPlane
+public enum FrustumPlane : uint
 {
     /// <remarks>Native: <c>R3D_FrustumPlane.R3D_PLANE_BACK</c></remarks>
     PlaneBack,

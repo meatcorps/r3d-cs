@@ -50,12 +50,10 @@ public static class Lights
         var lights = new Light[NUM_LIGHTS];
         for (var i = 0; i < NUM_LIGHTS; i++)
         {
-            lights[i] = R3D.CreateLight(LightType.Omni);
-            R3D.SetLightPosition(lights[i], new Vector3(Randf(-GRID_SIZE / 2f, GRID_SIZE / 2f), Randf(1.0f, 5.0f), Randf(-GRID_SIZE / 2f, GRID_SIZE / 2f)));
-            R3D.SetLightColor(lights[i], ColorFromHSV(Randf(0.0f, 360.0f), 1.0f, 1.0f));
-            R3D.SetLightRange(lights[i], Randf(8.0f, 16.0f));
-            R3D.EnableLight(lights[i]);
-            //R3D.EnableShadow(lights[i]);
+            lights[i] = R3D.CreateOmniLight(Vector3.Zero, 0, Color.White, 1f);
+            lights[i].Position = new Vector3(Randf(-GRID_SIZE / 2f, GRID_SIZE / 2f), Randf(1.0f, 5.0f), Randf(-GRID_SIZE / 2f, GRID_SIZE / 2f));
+            lights[i].Color = ColorFromHSV(Randf(0.0f, 360.0f), 1.0f, 1.0f);
+            lights[i].Range = Randf(8.0f, 16.0f);
         }
 
         // Setup camera
@@ -77,6 +75,10 @@ public static class Lights
 
             // Draw scene
             R3D.Begin(camera);
+                for (var i = 0; i < NUM_LIGHTS; i++)
+                {
+                    R3D.PushLight(lights[i]);
+                }
                 R3D.DrawMesh(plane, material, new Vector3(0, -0.25f, 0), 1.0f);
                 R3D.DrawMeshInstanced(cube, material, instances, GRID_SIZE*GRID_SIZE);
             R3D.End();

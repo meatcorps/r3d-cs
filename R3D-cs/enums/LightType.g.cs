@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_LightType</c>
 /// </remarks>
-public enum LightType
+public enum LightType : uint
 {
     /// <summary>
     /// Directional light, affects the entire scene with parallel rays.

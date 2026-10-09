@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_PrimitiveType</c>
 /// </remarks>
-public enum PrimitiveType
+public enum PrimitiveType : uint
 {
     /// <summary>
     /// Each vertex represents a single point.

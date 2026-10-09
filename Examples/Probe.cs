@@ -42,17 +42,14 @@ public static class Probe
         var material = R3D.GetDefaultMaterial();
 
         // Create light
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(0, 10, 5), Vector3.Zero);
-        R3D.EnableLight(light);
-        R3D.EnableShadow(light);
+        var light = R3D.CreateSpotLight(new Vector3(0, 10, 5), new Vector3(0, -1, -0.5f), 16.0f, Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
 
         // Create probe
-        var probe = R3D.CreateProbe(ProbeFlags.Illumination | ProbeFlags.Reflection);
-        R3D.SetProbePosition(probe, new Vector3(0, 1, 0));
-        R3D.SetProbeShadows(probe, true);
-        R3D.SetProbeFalloff(probe, 0.5f);
-        R3D.EnableProbe(probe);
+        var rfProbe = R3D.LoadProbe(ProbeType.Reflection, false, true);
+        rfProbe.Position  = new Vector3(0, 1, 0);
+        rfProbe.Falloff   = 0.0f; //< clamped internally
+        rfProbe.Range     = 8.0f;
 
         // Setup camera
         var camera = new Camera3D
@@ -72,14 +69,15 @@ public static class Probe
                 ClearBackground(Color.RayWhite);
 
                 R3D.Begin(camera);
-
+                    R3D.PushProbe(rfProbe, false);
+                    R3D.PushLightEx(light, shadow, false);
                     material.Orm.Roughness = 0.5f;
                     material.Orm.Metalness = 0.0f;
                     R3D.DrawMesh(plane, material, Vector3.Zero, 1.0f);
 
                     for (int i = -1; i <= 1; i++) {
                         material.Orm.Roughness = MathF.Abs(i) * 0.4f;
-                        material.Orm.Metalness = 1.0f - MathF.Abs(i);   
+                        material.Orm.Metalness = 1.0f - MathF.Abs(i);
                         R3D.DrawMesh(sphere, material, new Vector3(i * 3.0f, 1.0f, 0), 2.0f);
                     }
 
@@ -89,6 +87,8 @@ public static class Probe
         }
 
         // Cleanup
+        R3D.UnloadProbe(rfProbe);
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadAmbientMap(ambientMap);
         R3D.UnloadCubemap(cubemap);
         R3D.UnloadMesh(sphere);

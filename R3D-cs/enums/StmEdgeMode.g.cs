@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_StmEdgeMode</c>
 /// </remarks>
-public enum StmEdgeMode
+public enum StmEdgeMode : uint
 {
     /// <summary>
     /// Switch to next state instantly, with respecting cross fade time.

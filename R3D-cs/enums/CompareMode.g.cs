@@ -13,7 +13,7 @@ namespace R3D_cs;
 /// The depth/stencil comparison mode affects both forward and deferred rendering passes.
 /// Native: <c>R3D_CompareMode</c>
 /// </remarks>
-public enum CompareMode
+public enum CompareMode : uint
 {
     /// <summary>
     /// Passes if 'value' &lt; 'buffer' (default)

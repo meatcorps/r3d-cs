@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_UpscaleMode</c>
 /// </remarks>
-public enum UpscaleMode
+public enum UpscaleMode : uint
 {
     /// <summary>
     /// Nearest-neighbor upscaling: very fast, but produces blocky pixels.

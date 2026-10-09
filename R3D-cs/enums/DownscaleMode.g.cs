@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_DownscaleMode</c>
 /// </remarks>
-public enum DownscaleMode
+public enum DownscaleMode : uint
 {
     /// <summary>
     /// Nearest-neighbor downscaling: very fast, but produces aliasing.

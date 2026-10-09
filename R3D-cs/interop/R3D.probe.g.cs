@@ -18,277 +18,34 @@ public static unsafe partial class R3D
 {
 
     /// <summary>
-    /// Creates a new probe of the specified type.
-    /// <para>
-    /// The returned probe must be destroyed using ::R3D_DestroyProbe when it is no longer needed.
-    /// </para>
+    /// Allocates a probe of the given type.
     /// </summary>
-    /// <param name="flags">IBL components that the probe must support.</param>
-    /// <returns>A valid probe ID, or a negative value on failure.</returns>
+    /// <param name="type">Whether this probe contributes indirect lighting or reflections.</param>
+    /// <param name="interior">Whether the skybox is taken into account when capturing this probe.</param>
+    /// <param name="shadow">Whether shadow casters are taken into account when capturing this probe.</param>
     /// <remarks>
-    /// Native: <c>R3D_CreateProbe</c>
+    /// Native: <c>R3D_LoadProbe</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_CreateProbe")]
-    public static partial Probe CreateProbe(ProbeFlags flags);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_LoadProbe")]
+    public static partial Probe LoadProbe(ProbeType type, [MarshalAs(UnmanagedType.I1)] bool interior, [MarshalAs(UnmanagedType.I1)] bool shadow);
 
     /// <summary>
-    /// Destroys a probe and frees its resources.
+    /// Releases a probe, freeing its layer for reuse.
     /// </summary>
-    /// <param name="id">Probe ID to destroy.</param>
     /// <remarks>
-    /// Native: <c>R3D_DestroyProbe</c>
+    /// Native: <c>R3D_UnloadProbe</c>
     /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_DestroyProbe")]
-    public static partial void DestroyProbe(Probe id);
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_UnloadProbe")]
+    public static partial void UnloadProbe(Probe probe);
 
     /// <summary>
-    /// Returns whether a probe ID is valid and allocated.
+    /// Returns whether the probe has a valid allocated layer.
     /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <returns>true if the probe exists, otherwise false.</returns>
     /// <remarks>
     /// Native: <c>R3D_IsProbeValid</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_IsProbeValid")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool IsProbeValid(Probe id);
-
-    /// <summary>
-    /// Returns the probe flags.
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <returns>The flags assigned to the probe.</returns>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeFlags</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeFlags")]
-    public static partial ProbeFlags GetProbeFlags(Probe id);
-
-    /// <summary>
-    /// Returns whether a probe is currently enabled.
-    /// <para>
-    /// Disabled probes do not contribute to lighting.
-    /// </para>
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <returns>true if the probe is enabled, otherwise false.</returns>
-    /// <remarks>
-    /// Native: <c>R3D_IsProbeEnabled</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_IsProbeEnabled")]
-    [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool IsProbeEnabled(Probe id);
-
-    /// <summary>
-    /// Toggles a probe between enabled and disabled states.
-    /// <para>
-    /// Re-enabling a probe schedules a scene capture on the next frame.
-    /// </para>
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <remarks>
-    /// Native: <c>R3D_ToggleProbe</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_ToggleProbe")]
-    public static partial void ToggleProbe(Probe id);
-
-    /// <summary>
-    /// Enables a probe.
-    /// <para>
-    /// Schedules a scene capture on the next frame. Has no effect if the probe is already enabled.
-    /// </para>
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <remarks>
-    /// Native: <c>R3D_EnableProbe</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_EnableProbe")]
-    public static partial void EnableProbe(Probe id);
-
-    /// <summary>
-    /// Disables a probe.
-    /// <para>
-    /// Has no effect if the probe is already disabled.
-    /// </para>
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <remarks>
-    /// Native: <c>R3D_DisableProbe</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_DisableProbe")]
-    public static partial void DisableProbe(Probe id);
-
-    /// <summary>
-    /// Gets the probe update mode.
-    /// <para>
-    /// <list type="bullet">
-    /// <item><description>R3D_PROBE_UPDATE_ONCE: Captured once, then reused unless its state changes.</description></item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// <list type="bullet">
-    /// <item><description>R3D_PROBE_UPDATE_ALWAYS: Recaptured every frame.</description></item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// Use &quot;ONCE&quot; for static scenes, &quot;ALWAYS&quot; for highly dynamic scenes.
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeUpdateMode</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeUpdateMode")]
-    public static partial ProbeUpdateMode GetProbeUpdateMode(Probe id);
-
-    /// <summary>
-    /// Sets the probe update mode.
-    /// <para>
-    /// Controls when the probe capture is refreshed.
-    /// </para>
-    /// <para>
-    /// Default: R3D_PROBE_UPDATE_ONCE
-    /// </para>
-    /// </summary>
-    /// <param name="id">Probe ID.</param>
-    /// <param name="mode">Update mode to apply.</param>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbeUpdateMode</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbeUpdateMode")]
-    public static partial void SetProbeUpdateMode(Probe id, ProbeUpdateMode mode);
-
-    /// <summary>
-    /// Returns whether the probe is considered indoors.
-    /// <para>
-    /// Indoor probes do not sample skybox or environment maps. Instead they rely only on ambient and background colors.
-    /// </para>
-    /// <para>
-    /// Use this for rooms, caves, tunnels, etc... where outside lighting should not bleed inside.
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeInterior</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeInterior")]
-    [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool GetProbeInterior(Probe id);
-
-    /// <summary>
-    /// Enables or disables indoor mode for the probe.
-    /// <para>
-    /// Default: false
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbeInterior</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbeInterior")]
-    public static partial void SetProbeInterior(Probe id, [MarshalAs(UnmanagedType.I1)] bool active);
-
-    /// <summary>
-    /// Returns whether shadows are captured by this probe.
-    /// <para>
-    /// When enabled, shadowing is baked into the captured lighting. This improves realism, but increases capture cost.
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeShadows</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeShadows")]
-    [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool GetProbeShadows(Probe id);
-
-    /// <summary>
-    /// Enables or disables shadow rendering during probe capture.
-    /// <para>
-    /// Default: false
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbeShadows</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbeShadows")]
-    public static partial void SetProbeShadows(Probe id, [MarshalAs(UnmanagedType.I1)] bool active);
-
-    /// <summary>
-    /// Gets the world position of the probe.
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbePosition</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbePosition")]
-    public static partial Vector3 GetProbePosition(Probe id);
-
-    /// <summary>
-    /// Sets the world position of the probe.
-    /// <para>
-    /// Default: (Vector3) {0.0f, 0.0f, 0.0f}
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbePosition</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbePosition")]
-    public static partial void SetProbePosition(Probe id, Vector3 position);
-
-    /// <summary>
-    /// Gets the effective range of the probe.
-    /// <para>
-    /// The range defines the radius (in world units) within which this probe contributes to lighting. Objects outside this sphere receive no influence.
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeRange</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeRange")]
-    public static partial float GetProbeRange(Probe id);
-
-    /// <summary>
-    /// Sets the effective range of the probe.
-    /// </summary>
-    /// <param name="range">Radius in world units. Must be &gt; 0.</param>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbeRange</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbeRange")]
-    public static partial void SetProbeRange(Probe id, float range);
-
-    /// <summary>
-    /// Gets the falloff factor applied to probe contributions.
-    /// <para>
-    /// Falloff controls how lighting fades as distance increases.
-    /// </para>
-    /// <para>
-    /// Internally this uses a power curve: attenuation = 1.0 - pow(dist / probe.range, probe.falloff)
-    /// </para>
-    /// <para>
-    /// Effects:
-    /// <list type="bullet">
-    /// <item><description>falloff = 1 -&gt; linear fade</description></item>
-    /// <item><description>falloff &gt; 1 -&gt; light stays strong near the probe, drops faster at the edge</description></item>
-    /// <item><description>falloff &lt; 1 -&gt; softer fade across the whole range</description></item>
-    /// </list>
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_GetProbeFalloff</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetProbeFalloff")]
-    public static partial float GetProbeFalloff(Probe id);
-
-    /// <summary>
-    /// Sets the falloff factor used for distance attenuation.
-    /// <para>
-    /// Larger values make the probe feel more localized.
-    /// </para>
-    /// <para>
-    /// Default: 1.0f
-    /// </para>
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>R3D_SetProbeFalloff</c>
-    /// </remarks>
-    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetProbeFalloff")]
-    public static partial void SetProbeFalloff(Probe id, float falloff);
+    public static partial bool IsProbeValid(Probe probe);
 
 }

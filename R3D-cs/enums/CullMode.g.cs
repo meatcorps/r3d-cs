@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_CullMode</c>
 /// </remarks>
-public enum CullMode
+public enum CullMode : uint
 {
     /// <summary>
     /// No culling; all faces are rendered.

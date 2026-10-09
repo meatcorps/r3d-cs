@@ -56,12 +56,8 @@ public static class Billboards
         R3D.UnmapInstances(instances, InstanceFlags.Position | InstanceFlags.Scale);
 
         // Setup directional light with shadows
-        var light = R3D.CreateLight(LightType.Dir);
-        R3D.SetLightDirection(light, new Vector3(-1, -1, -1));
-        R3D.SetShadowDepthBias(light, 0.01f);
-        R3D.EnableShadow(light);
-        R3D.EnableLight(light);
-        R3D.SetLightRange(light, 32.0f);
+        var light = R3D.CreateDirLight(new Vector3(-1, -1, -1), Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Dir);
 
         // Setup camera
         var camera = new Camera3D
@@ -84,6 +80,7 @@ public static class Billboards
                 ClearBackground(Color.RayWhite);
 
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMesh(meshGround, matGround, Vector3.Zero, 1.0f);
                     R3D.DrawMeshInstanced(meshBillboard, matBillboard, instances, 64);
                 R3D.End();
@@ -92,6 +89,7 @@ public static class Billboards
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMaterial(matBillboard);
         R3D.UnloadMesh(meshBillboard);
         R3D.UnloadMesh(meshGround);

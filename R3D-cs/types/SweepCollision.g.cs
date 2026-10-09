@@ -19,22 +19,6 @@ namespace R3D_cs;
 public struct SweepCollision
 {
     /// <summary>
-    /// Whether a collision occurred
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>hit</c>
-    /// </remarks>
-    public bool Hit;
-
-    /// <summary>
-    /// Time of impact [0-1], fraction along velocity vector
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>time</c>
-    /// </remarks>
-    public float Time;
-
-    /// <summary>
     /// World space collision point
     /// </summary>
     /// <remarks>
@@ -49,5 +33,21 @@ public struct SweepCollision
     /// Native: <c>normal</c>
     /// </remarks>
     public Vector3 Normal;
+
+    /// <summary>
+    /// Time of impact [0-1], fraction along velocity vector
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>time</c>
+    /// </remarks>
+    public float Time;
+
+    /// <summary>
+    /// Whether a collision occurred
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>hit</c>
+    /// </remarks>
+    public bool Hit;
 
 }

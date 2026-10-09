@@ -6,7 +6,7 @@ using static Raylib_cs.Raylib;
 
 namespace Examples;
 
-public static class Sprite
+public static class  Sprite
 {
     public static int Main()
     {
@@ -41,11 +41,8 @@ public static class Sprite
         matSprite.BillboardMode = BillboardMode.YAxis;
 
         // Setup spotlight
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(0, 10, 10), Vector3.Zero);
-        R3D.SetLightRange(light, 64.0f);
-        R3D.EnableShadow(light);
-        R3D.EnableLight(light);
+        var light = R3D.CreateSpotLight(new Vector3(0, 10,10), new Vector3(0, -1, -1), 32.0f, Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
 
         // Setup camera
         var camera = new Camera3D
@@ -78,6 +75,7 @@ public static class Sprite
 
                 // Draw scene
                 R3D.Begin(camera);
+                    R3D.PushLightEx(light, shadow, true);
                     R3D.DrawMesh(meshGround, matGround, new Vector3(0, -0.5f, 0), 1.0f);
                     R3D.DrawMesh(meshSprite, matSprite, birdPos with { Z = 0 }, 1.0f);
                 R3D.End();
@@ -86,6 +84,7 @@ public static class Sprite
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         R3D.UnloadMaterial(matSprite);
         R3D.UnloadMesh(meshSprite);
         R3D.UnloadMesh(meshGround);

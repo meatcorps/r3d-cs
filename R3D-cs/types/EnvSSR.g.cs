@@ -22,44 +22,20 @@ namespace R3D_cs;
 public struct EnvSSR
 {
     /// <summary>
-    /// Maximum ray marching steps (default: 32)
+    /// Maximum ray marching iterations (default: 64)
     /// </summary>
     /// <remarks>
-    /// Native: <c>maxRaySteps</c>
+    /// Native: <c>maxIterations</c>
     /// </remarks>
-    public int MaxRaySteps;
+    public int MaxIterations;
 
     /// <summary>
-    /// Binary search refinement steps (default: 4)
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>binarySteps</c>
-    /// </remarks>
-    public int BinarySteps;
-
-    /// <summary>
-    /// Ray step size (default: 0.125)
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>stepSize</c>
-    /// </remarks>
-    public float StepSize;
-
-    /// <summary>
-    /// Depth tolerance for valid hits (default: 0.2)
+    /// Depth tolerance for valid hits (default: 0.5)
     /// </summary>
     /// <remarks>
     /// Native: <c>thickness</c>
     /// </remarks>
     public float Thickness;
-
-    /// <summary>
-    /// Maximum ray distance (default: 4.0)
-    /// </summary>
-    /// <remarks>
-    /// Native: <c>maxDistance</c>
-    /// </remarks>
-    public float MaxDistance;
 
     /// <summary>
     /// Screen edge fade start [0,1] (default: 0.25)

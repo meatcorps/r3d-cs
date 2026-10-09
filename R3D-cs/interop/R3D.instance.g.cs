@@ -72,13 +72,28 @@ public static unsafe partial class R3D
     public static partial void UnloadInstanceBuffer(InstanceBuffer buffer);
 
     /// <summary>
-    /// Grow the GPU buffers of an instance buffer to a new capacity.
+    /// Grow an instance buffer's capacity if needed.
     /// <para>
-    /// Only expands; if newCapacity &lt; = buffer-&gt;capacity the call is a no-op. All attribute buffers present in buffer-&gt;flags are reallocated and if keepData is true, their existing content is copied to the new buffers before the old ones are deleted.
+    /// No-op if minCapacity &lt; = buffer-&gt;capacity. Otherwise calls R3D_ResizeInstanceBuffer with minCapacity.
+    /// </para>
+    /// </summary>
+    /// <param name="buffer">Instance buffer to reserve capacity on (updated in place).</param>
+    /// <param name="minCapacity">Minimum capacity in number of instances.</param>
+    /// <param name="keepData">If true, preserves existing instance data.</param>
+    /// <remarks>
+    /// Native: <c>R3D_ReserveInstanceBuffer</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ReserveInstanceBuffer")]
+    public static partial void ReserveInstanceBuffer(ref InstanceBuffer buffer, int minCapacity, [MarshalAs(UnmanagedType.I1)] bool keepData);
+
+    /// <summary>
+    /// Resize the GPU buffers of an instance buffer to an exact capacity.
+    /// <para>
+    /// Grows or shrinks every enabled attribute buffer to newCapacity. No-op if newCapacity already equals the current capacity. If keepData is true, existing content is copied over, truncated if newCapacity is smaller.
     /// </para>
     /// </summary>
     /// <param name="buffer">Instance buffer to resize (updated in place).</param>
-    /// <param name="newCapacity">Desired minimum capacity in number of instances.</param>
+    /// <param name="newCapacity">Exact new capacity in number of instances.</param>
     /// <param name="keepData">If true, preserves existing instance data.</param>
     /// <remarks>
     /// Native: <c>R3D_ResizeInstanceBuffer</c>

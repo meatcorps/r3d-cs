@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_BillboardMode</c>
 /// </remarks>
-public enum BillboardMode
+public enum BillboardMode : uint
 {
     /// <summary>
     /// Billboarding is disabled; the object retains its original orientation.

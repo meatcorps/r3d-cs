@@ -6,25 +6,25 @@ namespace R3D_cs;
 /// <summary>
 /// Blend modes.
 /// <para>
-/// Defines common blending modes used in 3D rendering to combine source and destination colors.
+/// Defines common blending modes to combine source and destination colors.
 /// </para>
 /// </summary>
 /// <remarks>
-/// The blend mode is applied only if you are in forward rendering mode or auto-detect mode.
+/// Ignored when R3D_TRANSPARENCY_OPAQUE is selected.
 /// Native: <c>R3D_BlendMode</c>
 /// </remarks>
-public enum BlendMode
+public enum BlendMode : uint
 {
     /// <summary>
-    /// Default mode: the result will be opaque or alpha blended depending on the transparency mode.
+    /// Standard alpha blending: source color is blended using its alpha channel.
     /// </summary>
     /// <remarks>
-    /// Native: <c>R3D_BlendMode.R3D_BLEND_MIX</c>
+    /// Native: <c>R3D_BlendMode.R3D_BLEND_ALPHA</c>
     /// </remarks>
-    Mix,
+    Alpha,
 
     /// <summary>
-    /// Additive blending: source color is added to the destination, making bright effects.
+    /// Pure additive blending: source color is added directly to destination (ignores alpha).
     /// </summary>
     /// <remarks>
     /// Native: <c>R3D_BlendMode.R3D_BLEND_ADDITIVE</c>
@@ -32,7 +32,15 @@ public enum BlendMode
     Additive,
 
     /// <summary>
-    /// Multiply blending: source color is multiplied with the destination, darkening the image.
+    /// Alpha-modulated additive blending: source color scaled by alpha before adding to destination.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_BlendMode.R3D_BLEND_ADD_ALPHA</c>
+    /// </remarks>
+    AddAlpha,
+
+    /// <summary>
+    /// Multiply blending: source color is multiplied with destination, darkening the image.
     /// </summary>
     /// <remarks>
     /// Native: <c>R3D_BlendMode.R3D_BLEND_MULTIPLY</c>
@@ -40,7 +48,7 @@ public enum BlendMode
     Multiply,
 
     /// <summary>
-    /// Premultiplied alpha blending: source color is blended with the destination assuming the source color is already multiplied by its alpha.
+    /// Premultiplied alpha blending: assumes source color is already multiplied by its alpha.
     /// </summary>
     /// <remarks>
     /// Native: <c>R3D_BlendMode.R3D_BLEND_PREMULTIPLIED_ALPHA</c>

@@ -13,6 +13,7 @@ namespace R3D_cs;
 /// Background and skybox configuration.
 /// </summary>
 /// <remarks>
+/// A transparent or semi-transparent background color is supported, but effects that blur/spread geometry (like bloom or DoF) will bleed or fade at silhouettes instead of blending with real content behind.
 /// Native: <c>R3D_EnvBackground</c>
 /// </remarks>
 [StructLayout(LayoutKind.Sequential)]

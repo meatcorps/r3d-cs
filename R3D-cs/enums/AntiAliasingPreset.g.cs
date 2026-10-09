@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_AntiAliasingPreset</c>
 /// </remarks>
-public enum AntiAliasingPreset
+public enum AntiAliasingPreset : uint
 {
     /// <summary>
     /// Performance-oriented preset with reduced quality.

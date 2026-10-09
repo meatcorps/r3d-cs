@@ -12,7 +12,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_Fog</c>
 /// </remarks>
-public enum Fog
+public enum Fog : uint
 {
     /// <summary>
     /// No fog effect

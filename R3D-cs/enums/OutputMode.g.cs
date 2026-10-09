@@ -10,7 +10,7 @@ namespace R3D_cs;
 /// Nothing will be output if the requested target has not been created / used.
 /// Native: <c>R3D_OutputMode</c>
 /// </remarks>
-public enum OutputMode
+public enum OutputMode : uint
 {
     /// <remarks>Native: <c>R3D_OutputMode.R3D_OUTPUT_SCENE</c></remarks>
     Scene,
@@ -24,8 +24,8 @@ public enum OutputMode
     /// <remarks>Native: <c>R3D_OutputMode.R3D_OUTPUT_ORM</c></remarks>
     Orm,
 
-    /// <remarks>Native: <c>R3D_OutputMode.R3D_OUTPUT_DIFFUSE</c></remarks>
-    Diffuse,
+    /// <remarks>Native: <c>R3D_OutputMode.R3D_OUTPUT_RADIANCE</c></remarks>
+    Radiance,
 
     /// <remarks>Native: <c>R3D_OutputMode.R3D_OUTPUT_SPECULAR</c></remarks>
     Specular,

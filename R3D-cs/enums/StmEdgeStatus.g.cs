@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_StmEdgeStatus</c>
 /// </remarks>
-public enum StmEdgeStatus
+public enum StmEdgeStatus : uint
 {
     /// <summary>
     /// Edge is traversable by travel function.

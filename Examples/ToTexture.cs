@@ -25,10 +25,9 @@ public static class ToTexture
         R3D.SetEnvironmentEx((ref env) => env.Ambient.Color = new Color(10, 10, 10, 255));
 
         // Create light
-        var light = R3D.CreateLight(LightType.Spot);
-        R3D.SetLightTarget(light, new Vector3(0, 10, 5), Vector3.Zero);
-        R3D.EnableShadow(light);
-        R3D.EnableLight(light);
+        var light = R3D.CreateSpotLight(new Vector3(0, 10, 5), new Vector3(0, -1, -0.5f), 50.0f, Color.White, 1.0f);
+        var shadow = R3D.LoadShadowMap(LightType.Spot);
+        shadow.Softness = 4.0f;
 
         // Render texture that the R3D scene is drawn into
         var target = LoadRenderTexture(1024, 512);
@@ -68,6 +67,7 @@ public static class ToTexture
                 };
 
                 R3D.BeginPro(view);
+                    R3D.PushLightEx(light, shadow, false);
                     R3D.DrawMesh(plane, material, new Vector3(0, -0.5f, 0), 1.0f);
                     R3D.DrawMesh(sphere, material, Vector3.Zero, 1.0f);
                 R3D.End();
@@ -82,6 +82,7 @@ public static class ToTexture
         }
 
         // Cleanup
+        R3D.UnloadShadowMap(shadow);
         UnloadRenderTexture(target);
         R3D.UnloadMesh(sphere);
         R3D.UnloadMesh(plane);

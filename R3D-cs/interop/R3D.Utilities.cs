@@ -117,9 +117,9 @@ public static unsafe partial class R3D
                 OpZFail = StencilOp.StencilKeep,
                 OpPass = StencilOp.StencilReplace
             },
-            TransparencyMode = TransparencyMode.Disabled,
+            TransparencyMode = TransparencyMode.Blend,
             BillboardMode = BillboardMode.Disabled,
-            BlendMode = BlendMode.Mix,
+            BlendMode = BlendMode.Alpha,
             CullMode = CullMode.Back,
             Unlit = false,
             Priority = 0,

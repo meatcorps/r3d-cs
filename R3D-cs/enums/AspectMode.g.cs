@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_AspectMode</c>
 /// </remarks>
-public enum AspectMode
+public enum AspectMode : uint
 {
     /// <summary>
     /// Expands the rendered output to fully fill the target (render texture or window).

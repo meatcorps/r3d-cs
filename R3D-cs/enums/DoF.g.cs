@@ -9,7 +9,7 @@ namespace R3D_cs;
 /// <remarks>
 /// Native: <c>R3D_DoF</c>
 /// </remarks>
-public enum DoF
+public enum DoF : uint
 {
     /// <summary>
     /// No depth of field effect
