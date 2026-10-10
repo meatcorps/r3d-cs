@@ -34,7 +34,8 @@
         <PackageIcon>logo/r3d-cs_256x256.png</PackageIcon>
         <PackageTags>raylib r3d csharp gamedev meatcorps</PackageTags>
 
-        <PackageProjectUrl>https://github.com/YOUR-ACCOUNT/r3d-cs/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/meatcorps/r3d-cs/</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/meatcorps/r3d-cs/</PackageProjectUrl>
 
         <IsPackable>true</IsPackable>
         <IncludeSymbols>true</IncludeSymbols>
