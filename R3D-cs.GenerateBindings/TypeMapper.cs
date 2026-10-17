@@ -28,6 +28,9 @@ public static class TypeMapper
     /// <returns>A tuple of (csType, isUnsafe, isFixedBuffer, fixedSize).</returns>
     public static (string csType, bool isUnsafe, bool isFixedBuffer, int fixedSize) MapType(CppType type)
     {
+        if (type.FullName == "size_t")
+            return ("nuint", false, false, 0);
+
         // Exceptions for Raylib types
         switch (type.FullName)
         {
@@ -102,6 +105,12 @@ public static class TypeMapper
 
     private static (string csType, bool isUnsafe, bool isFixedBuffer, int fixedSize) MapTypedefType(string name)
     {
+        if (name == "size_t")
+            return ("nuint", false, false, 0);
+
+        if (name == "ManifoldSdf")
+            return ("IntPtr", false, false, 0);
+
         // Keep R3D_ prefix for our types (will be stripped later)
         if (name.StartsWith("R3D_"))
             return ("R3D_" + StringHelpers.StripR3DPrefix(name), false, false, 0);

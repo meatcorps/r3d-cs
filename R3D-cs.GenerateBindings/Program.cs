@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using CppAst;
+using System.Collections.Generic;
 
 namespace R3D_cs.GenerateBindings;
 
@@ -130,10 +131,19 @@ internal static class Program
                     ParseComments = true
                 };
 
+                parserOptions.IncludeFolders.Add(
+                    Path.Combine(repoPath, "external", "manifold", "bindings", "c", "include"));
                 ConfigureParserForHost(parserOptions);
 
-                var compilation =
-                    CppParser.ParseFile(headerPath, parserOptions);
+                var compilation = CppParser.ParseFiles(
+                    new List<string>
+                    {
+                        headerPath,
+                        Path.Combine(repoPath, "include", "r3d", "r3d_manifold.h"),
+                        Path.Combine(repoPath, "include", "r3d", "r3d_text_mesh.h"),
+                        Path.Combine(repoPath, "external", "manifold", "bindings", "c", "include", "manifold", "manifoldc.h")
+                    },
+                    parserOptions);
 
                 if (compilation.HasErrors)
                 {

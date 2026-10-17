@@ -743,6 +743,9 @@ public class CodeGenerator(string outputDir)
 
         foreach (var group in functions)
         {
+            bool isManifold = group.Key == "manifoldc";
+            string nativeLibrary = isManifold ? "\"manifoldc\"" : "NativeLibName";
+
             var sb = new StringBuilder();
             if (group.Key == "r3d_core")
             {
@@ -761,7 +764,7 @@ public class CodeGenerator(string outputDir)
             sb.AppendLine($"// {group.Key}.h;");
             sb.AppendLine();
             sb.AppendLine("[SuppressUnmanagedCodeSecurity]");
-            sb.AppendLine("public static unsafe partial class R3D");
+            sb.AppendLine($"public static unsafe partial class {(isManifold ? "Manifold" : "R3D")}");
             sb.AppendLine("{");
             sb.AppendLine();
             if (group.Key == "r3d_core")
@@ -790,7 +793,7 @@ public class CodeGenerator(string outputDir)
 
                 CommentGenerator.Generate(sb, function.Comment, name, "    ");
 
-                sb.Append("    [LibraryImport(NativeLibName");
+                sb.Append($"    [LibraryImport({nativeLibrary}");
                 sb.Append($", EntryPoint = \"{name}\"");
                 if (hasStringParam)
                     sb.Append(", StringMarshalling = StringMarshalling.Utf8");
@@ -799,7 +802,7 @@ public class CodeGenerator(string outputDir)
                 if (returnType == "bool")
                     sb.AppendLine("    [return: MarshalAs(UnmanagedType.I1)]");
 
-                sb.Append($"    public static partial {StripR3DPrefix(returnType)} {StripR3DPrefix(name)}(");
+                sb.Append($"    public static partial {StripR3DPrefix(returnType)} {(isManifold ? ToPascalCase(name["manifold_".Length..]) : StripR3DPrefix(name))}(");
                 for (var i = 0; i < function.Parameters.Count; i++)
                 {
                     if (i > 0)
@@ -821,7 +824,9 @@ public class CodeGenerator(string outputDir)
                         sb.Append("[MarshalAs(UnmanagedType.I1)] ");
 
                     // Convert pointer parameters to ref/out where appropriate
-                    (string? modifier, string finalType) = GetParameterModifier(param.Type, paramType, name);
+                    (string? modifier, string finalType) = isManifold
+                        ? (null, paramType)
+                        : GetParameterModifier(param.Type, paramType, name);
                     if (modifier != null)
                         sb.Append($"{modifier} ");
 
@@ -836,7 +841,11 @@ public class CodeGenerator(string outputDir)
 
             sb.AppendLine("}");
 
-            File.WriteAllText(Path.Combine(outputDir, "interop", $"R3D.{group.Key.Replace("r3d_", "")}.g.cs"), sb.ToString());
+            File.WriteAllText(
+                Path.Combine(outputDir, "interop",
+                    $"{(isManifold ? "Manifold" : "R3D")}.{group.Key.Replace("r3d_", "")}.g.cs"),
+                sb.ToString());
+
         }
 
         return funcCount;
@@ -873,7 +882,8 @@ public class CodeGenerator(string outputDir)
         // Normalize path separators for cross-platform compatibility
         char sep = Path.DirectorySeparatorChar;
         string normalized = sourceFile.Replace('/', sep).Replace('\\', sep);
-        return normalized.Contains($"include{sep}r3d{sep}");
+        return normalized.Contains($"include{sep}r3d{sep}") ||
+               normalized.Contains($"bindings{sep}c{sep}include{sep}manifold{sep}");
     }
 
     private static void ClearDirectory(string directory)
