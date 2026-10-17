@@ -89,6 +89,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetCameraView</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraView")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetCameraView(Camera camera);
 
     /// <summary>
@@ -98,6 +99,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetCameraProjection</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraProjection")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetCameraProjection(Camera camera, double aspect);
 
     /// <summary>
@@ -107,6 +109,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetCameraViewProjection</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetCameraViewProjection")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetCameraViewProjection(Camera camera, double aspect);
 
     /// <summary>

@@ -84,7 +84,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_SlideSphereMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SlideSphereMesh")]
-    public static partial Vector3 SlideSphereMesh(Vector3 center, float radius, Vector3 velocity, MeshData mesh, Matrix4x4 transform, ref Vector3 outNormal);
+    public static partial Vector3 SlideSphereMesh(Vector3 center, float radius, Vector3 velocity, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, ref Vector3 outNormal);
 
     /// <summary>
     /// Slide capsule along bounding box surface, resolving collisions
@@ -113,7 +113,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_SlideCapsuleMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SlideCapsuleMesh")]
-    public static partial Vector3 SlideCapsuleMesh(Capsule capsule, Vector3 velocity, MeshData mesh, Matrix4x4 transform, ref Vector3 outNormal);
+    public static partial Vector3 SlideCapsuleMesh(Capsule capsule, Vector3 velocity, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, ref Vector3 outNormal);
 
     /// <summary>
     /// Push sphere out of bounding box if penetrating
@@ -177,7 +177,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_CheckSphereSupportMesh")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool CheckSphereSupportMesh(Vector3 center, float radius, Vector3 direction, float distance, MeshData mesh, Matrix4x4 transform, ref RayCollision outHit);
+    public static partial bool CheckSphereSupportMesh(Vector3 center, float radius, Vector3 direction, float distance, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, ref RayCollision outHit);
 
     /// <summary>
     /// Check if a capsule is supported by a bounding box in a given direction
@@ -210,7 +210,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_CheckCapsuleSupportMesh")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool CheckCapsuleSupportMesh(Capsule capsule, Vector3 direction, float distance, MeshData mesh, Matrix4x4 transform, ref RayCollision outHit);
+    public static partial bool CheckCapsuleSupportMesh(Capsule capsule, Vector3 direction, float distance, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, ref RayCollision outHit);
 
     /// <summary>
     /// Sweep sphere against single point
@@ -300,7 +300,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_SweepSphereMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SweepSphereMesh")]
-    public static partial SweepCollision SweepSphereMesh(Vector3 center, float radius, Vector3 velocity, MeshData mesh, Matrix4x4 transform);
+    public static partial SweepCollision SweepSphereMesh(Vector3 center, float radius, Vector3 velocity, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Sweep capsule along velocity vector
@@ -327,6 +327,6 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_SweepCapsuleMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SweepCapsuleMesh")]
-    public static partial SweepCollision SweepCapsuleMesh(Capsule capsule, Vector3 velocity, MeshData mesh, Matrix4x4 transform);
+    public static partial SweepCollision SweepCapsuleMesh(Capsule capsule, Vector3 velocity, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
 }

@@ -130,6 +130,23 @@ public static class TypeMapper
         return (name, false, false, 0);
     }
 
+    public static bool IsNativeRaylibMatrix(CppType type)
+    {
+        return type switch
+        {
+            CppQualifiedType qualified =>
+                IsNativeRaylibMatrix(qualified.ElementType),
+
+            CppTypedef typedef =>
+                typedef.Name == "Matrix" ||
+                IsNativeRaylibMatrix(typedef.ElementType),
+
+            CppClass cls => cls.Name == "Matrix",
+
+            _ => false
+        };
+    }
+
     /// <summary>
     ///     Determines if a pointer parameter should use ref/out modifiers instead of raw pointers.
     /// </summary>

@@ -33,7 +33,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetOrientedBox</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetOrientedBox")]
-    public static partial OrientedBox GetOrientedBox(BoundingBox aabb, Matrix4x4 transform);
+    public static partial OrientedBox GetOrientedBox(BoundingBox aabb, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Check if two axis-aligned bounding boxes intersect
@@ -169,7 +169,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_CheckCollisionCapsuleMesh")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool CheckCollisionCapsuleMesh(Capsule capsule, MeshData mesh, Matrix4x4 transform);
+    public static partial bool CheckCollisionCapsuleMesh(Capsule capsule, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Check penetration between two axis-aligned bounding boxes
@@ -374,7 +374,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_RaycastMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_RaycastMesh")]
-    public static partial RayCollision RaycastMesh(Ray ray, MeshData mesh, Matrix4x4 transform);
+    public static partial RayCollision RaycastMesh(Ray ray, MeshData mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Cast a ray against a model (tests all meshes)
@@ -387,7 +387,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_RaycastModel</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_RaycastModel")]
-    public static partial RayCollision RaycastModel(Ray ray, Model model, Matrix4x4 transform);
+    public static partial RayCollision RaycastModel(Ray ray, Model model, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Find closest point on line segment to given point

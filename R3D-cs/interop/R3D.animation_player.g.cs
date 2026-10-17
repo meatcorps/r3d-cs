@@ -266,7 +266,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneLocalMatrix")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool SetAnimationBoneLocalMatrix(ref AnimationPlayer player, int boneIndex, Matrix4x4 matrix);
+    public static partial bool SetAnimationBoneLocalMatrix(ref AnimationPlayer player, int boneIndex, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 matrix);
 
     /// <summary>
     /// Sets a bone's desired model-space pose using an affine matrix.
@@ -285,7 +285,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneModelMatrix")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool SetAnimationBoneModelMatrix(ref AnimationPlayer player, int boneIndex, Matrix4x4 matrix);
+    public static partial bool SetAnimationBoneModelMatrix(ref AnimationPlayer player, int boneIndex, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 matrix);
 
     /// <summary>
     /// Computes the local-space transform of each bone for the current animation.

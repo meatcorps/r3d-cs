@@ -36,7 +36,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_ComputeFrustum</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeFrustum")]
-    public static partial Frustum ComputeFrustum(Matrix4x4 viewProj);
+    public static partial Frustum ComputeFrustum([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 viewProj);
 
     /// <summary>
     /// Compute the axis-aligned bounding box of a frustum.
@@ -46,7 +46,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_ComputeFrustumBoundingBox</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeFrustumBoundingBox")]
-    public static partial BoundingBox ComputeFrustumBoundingBox(Matrix4x4 invViewProj);
+    public static partial BoundingBox ComputeFrustumBoundingBox([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 invViewProj);
 
     /// <summary>
     /// Compute the eight corner points of a frustum.
@@ -57,7 +57,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_ComputeFrustumCorners</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeFrustumCorners")]
-    public static partial void ComputeFrustumCorners(Matrix4x4 invViewProj, Vector3* corners);
+    public static partial void ComputeFrustumCorners([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 invViewProj, Vector3* corners);
 
     /// <summary>
     /// Check if a point is inside the frustum.

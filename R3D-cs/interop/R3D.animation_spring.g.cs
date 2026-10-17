@@ -57,6 +57,6 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ApplyAnimationSpringBoneWorld")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool ApplyAnimationSpringBoneWorld(ref AnimationPlayer player, int boneIndex, ref SpringBoneState state, SpringBoneParams @params, Matrix4x4 modelToWorld, float deltaTime);
+    public static partial bool ApplyAnimationSpringBoneWorld(ref AnimationPlayer player, int boneIndex, ref SpringBoneState state, SpringBoneParams @params, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 modelToWorld, float deltaTime);
 
 }

@@ -802,6 +802,9 @@ public class CodeGenerator(string outputDir)
                 if (returnType == "bool")
                     sb.AppendLine("    [return: MarshalAs(UnmanagedType.I1)]");
 
+                if (IsNativeRaylibMatrix(function.ReturnType))
+                    sb.AppendLine("    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]");
+
                 sb.Append($"    public static partial {StripR3DPrefix(returnType)} {(isManifold ? ToPascalCase(name["manifold_".Length..]) : StripR3DPrefix(name))}(");
                 for (var i = 0; i < function.Parameters.Count; i++)
                 {
@@ -819,6 +822,9 @@ public class CodeGenerator(string outputDir)
                     // Array parameters (e.g. Vector3 corners[8]) decay to pointers in C.
                     if (isArrayParam)
                         paramType += "*";
+
+                    if (IsNativeRaylibMatrix(param.Type))
+                        sb.Append("[System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] ");
 
                     if (paramType == "bool")
                         sb.Append("[MarshalAs(UnmanagedType.I1)] ");

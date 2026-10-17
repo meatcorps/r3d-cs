@@ -401,7 +401,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_TransformMeshData</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_TransformMeshData")]
-    public static partial void TransformMeshData(ref MeshData meshData, Matrix4x4 transform);
+    public static partial void TransformMeshData(ref MeshData meshData, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Translates all vertices by a given offset.

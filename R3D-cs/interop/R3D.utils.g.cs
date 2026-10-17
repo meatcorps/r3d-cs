@@ -145,6 +145,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetMatrixView</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixView")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetMatrixView();
 
     /// <summary>
@@ -158,6 +159,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetMatrixInvView</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixInvView")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetMatrixInvView();
 
     /// <summary>
@@ -171,6 +173,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetMatrixProjection</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixProjection")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetMatrixProjection();
 
     /// <summary>
@@ -184,6 +187,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetMatrixInvProjection</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixInvProjection")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetMatrixInvProjection();
 
     /// <summary>
@@ -197,6 +201,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_GetMatrixViewProjection</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixViewProjection")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 GetMatrixViewProjection();
 
     /// <summary>
@@ -213,7 +218,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixEquals")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool MatrixEquals(Matrix4x4 a, Matrix4x4 b);
+    public static partial bool MatrixEquals([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 a, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 b);
 
     /// <summary>
     /// Create a complete TRS matrix.
@@ -222,6 +227,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_MatrixFromTRS</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTRS")]
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
     public static partial Matrix4x4 MatrixFromTRS(Vector3 position, Quaternion rotation, Vector3 scale);
 
     /// <summary>
@@ -231,26 +237,32 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_MatrixFromTR</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTR")]
-    public static partial Matrix4x4 MatrixFromTR(Matrix4x4 original, Vector3 position, Quaternion rotation);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromTR([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Vector3 position, Quaternion rotation);
 
     /// <remarks>Native: <c>R3D_MatrixFromTS</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTS")]
-    public static partial Matrix4x4 MatrixFromTS(Matrix4x4 original, Vector3 position, Vector3 scale);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromTS([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Vector3 position, Vector3 scale);
 
     /// <remarks>Native: <c>R3D_MatrixFromRS</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromRS")]
-    public static partial Matrix4x4 MatrixFromRS(Matrix4x4 original, Quaternion rotation, Vector3 scale);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromRS([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Quaternion rotation, Vector3 scale);
 
     /// <remarks>Native: <c>R3D_MatrixFromT</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromT")]
-    public static partial Matrix4x4 MatrixFromT(Matrix4x4 original, Vector3 position);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromT([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Vector3 position);
 
     /// <remarks>Native: <c>R3D_MatrixFromR</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromR")]
-    public static partial Matrix4x4 MatrixFromR(Matrix4x4 original, Quaternion rotation);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromR([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Quaternion rotation);
 
     /// <remarks>Native: <c>R3D_MatrixFromS</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromS")]
-    public static partial Matrix4x4 MatrixFromS(Matrix4x4 original, Vector3 scale);
+    [return: System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))]
+    public static partial Matrix4x4 MatrixFromS([System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 original, Vector3 scale);
 
 }

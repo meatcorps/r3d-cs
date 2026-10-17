@@ -82,7 +82,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_BoundingBoxToScreenRect")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool BoundingBoxToScreenRect(BoundingBox bounds, Matrix4x4 transform, View view, ref Rectangle result);
+    public static partial bool BoundingBoxToScreenRect(BoundingBox bounds, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, View view, ref Rectangle result);
 
     /// <summary>
     /// Projects a mesh's local bounds into a target-space rectangle.
@@ -92,7 +92,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_MeshToScreenRect")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool MeshToScreenRect(Mesh mesh, Matrix4x4 transform, View view, ref Rectangle result);
+    public static partial bool MeshToScreenRect(Mesh mesh, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, View view, ref Rectangle result);
 
     /// <summary>
     /// Projects a model's bounds into a target-space rectangle.
@@ -105,7 +105,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ModelToScreenRect")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool ModelToScreenRect(Model model, Matrix4x4 transform, View view, ref Rectangle result);
+    public static partial bool ModelToScreenRect(Model model, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform, View view, ref Rectangle result);
 
     /// <summary>
     /// Begins a rendering session using the given raylib camera.
@@ -295,7 +295,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawMeshPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawMeshPro")]
-    public static partial void DrawMeshPro(Mesh mesh, Material material, Matrix4x4 transform);
+    public static partial void DrawMeshPro(Mesh mesh, Material material, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues a mesh draw with GPU shape-key deformation.
@@ -314,7 +314,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawShapeKeyMeshPro")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool DrawShapeKeyMeshPro(Mesh mesh, Material material, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, Matrix4x4 transform);
+    public static partial bool DrawShapeKeyMeshPro(Mesh mesh, Material material, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an instanced mesh draw command.
@@ -367,7 +367,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawMeshInstancedPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawMeshInstancedPro")]
-    public static partial void DrawMeshInstancedPro(Mesh mesh, Material material, InstanceBuffer instances, int offset, int count, Matrix4x4 transform);
+    public static partial void DrawMeshInstancedPro(Mesh mesh, Material material, InstanceBuffer instances, int offset, int count, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an animated mesh draw command.
@@ -397,7 +397,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawAnimatedMeshPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshPro")]
-    public static partial void DrawAnimatedMeshPro(Mesh mesh, Material material, AnimationPlayer player, Matrix4x4 transform);
+    public static partial void DrawAnimatedMeshPro(Mesh mesh, Material material, AnimationPlayer player, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Draws an animated mesh with explicit local-space culling bounds.
@@ -412,7 +412,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawAnimatedMeshProBounds</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshProBounds")]
-    public static partial void DrawAnimatedMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, BoundingBox bounds, Matrix4x4 transform);
+    public static partial void DrawAnimatedMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, BoundingBox bounds, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// GPU morphing followed by skeletal animation.
@@ -422,7 +422,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedShapeKeyMeshPro")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool DrawAnimatedShapeKeyMeshPro(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, Matrix4x4 transform);
+    public static partial bool DrawAnimatedShapeKeyMeshPro(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Draws a GPU-morphed and skinned mesh with explicit bounds.
@@ -438,7 +438,7 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedShapeKeyMeshProBounds")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool DrawAnimatedShapeKeyMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, BoundingBox bounds, Matrix4x4 transform);
+    public static partial bool DrawAnimatedShapeKeyMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, BoundingBox bounds, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues a model draw command with position and uniform scale.
@@ -474,7 +474,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawModelPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawModelPro")]
-    public static partial void DrawModelPro(Model model, Matrix4x4 transform);
+    public static partial void DrawModelPro(Model model, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an instanced model draw command.
@@ -527,7 +527,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawModelInstancedPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawModelInstancedPro")]
-    public static partial void DrawModelInstancedPro(Model model, InstanceBuffer instances, int offset, int count, Matrix4x4 transform);
+    public static partial void DrawModelInstancedPro(Model model, InstanceBuffer instances, int offset, int count, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an animated model draw command.
@@ -569,7 +569,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawAnimatedModelPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedModelPro")]
-    public static partial void DrawAnimatedModelPro(Model model, AnimationPlayer player, Matrix4x4 transform);
+    public static partial void DrawAnimatedModelPro(Model model, AnimationPlayer player, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Draws an animated model with explicit local-space culling bounds.
@@ -584,7 +584,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawAnimatedModelProBounds</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedModelProBounds")]
-    public static partial void DrawAnimatedModelProBounds(Model model, AnimationPlayer player, BoundingBox bounds, Matrix4x4 transform);
+    public static partial void DrawAnimatedModelProBounds(Model model, AnimationPlayer player, BoundingBox bounds, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an instanced animated model draw command.
@@ -637,7 +637,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawAnimatedModelInstancedPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedModelInstancedPro")]
-    public static partial void DrawAnimatedModelInstancedPro(Model model, AnimationPlayer player, InstanceBuffer instances, int offset, int count, Matrix4x4 transform);
+    public static partial void DrawAnimatedModelInstancedPro(Model model, AnimationPlayer player, InstanceBuffer instances, int offset, int count, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues a decal draw command with position and uniform scale.
@@ -673,7 +673,7 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawDecalPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawDecalPro")]
-    public static partial void DrawDecalPro(Decal decal, Matrix4x4 transform);
+    public static partial void DrawDecalPro(Decal decal, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
     /// <summary>
     /// Queues an instanced decal draw command.
@@ -726,6 +726,6 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawDecalInstancedPro</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawDecalInstancedPro")]
-    public static partial void DrawDecalInstancedPro(Decal decal, InstanceBuffer instances, int offset, int count, Matrix4x4 transform);
+    public static partial void DrawDecalInstancedPro(Decal decal, InstanceBuffer instances, int offset, int count, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
 }

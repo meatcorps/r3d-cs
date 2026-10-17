@@ -112,6 +112,6 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_UpdateSpringChainWorld")]
     [return: MarshalAs(UnmanagedType.I1)]
-    public static partial bool UpdateSpringChainWorld(ref SpringChain chain, ref AnimationPlayer player, Matrix4x4 modelToWorld, float deltaTime);
+    public static partial bool UpdateSpringChainWorld(ref SpringChain chain, ref AnimationPlayer player, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 modelToWorld, float deltaTime);
 
 }

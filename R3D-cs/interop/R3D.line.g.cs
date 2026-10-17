@@ -206,6 +206,6 @@ public static unsafe partial class R3D
     /// Native: <c>R3D_DrawScreenLineMesh</c>
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawScreenLineMesh")]
-    public static partial void DrawScreenLineMesh(Mesh mesh, Material material, SurfaceEffect effect, float widthScale, Matrix4x4 transform);
+    public static partial void DrawScreenLineMesh(Mesh mesh, Material material, SurfaceEffect effect, float widthScale, [System.Runtime.InteropServices.Marshalling.MarshalUsing(typeof(RaylibMatrixMarshaller))] Matrix4x4 transform);
 
 }
