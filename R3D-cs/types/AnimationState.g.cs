@@ -22,7 +22,7 @@ namespace R3D_cs;
 public struct AnimationState
 {
     /// <summary>
-    /// Current playback time in animation ticks.
+    /// Current playback time in seconds.
     /// </summary>
     /// <remarks>
     /// Native: <c>currentTime</c>

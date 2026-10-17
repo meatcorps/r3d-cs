@@ -45,6 +45,9 @@ public unsafe struct Model
     /// </remarks>
     internal MeshName* _meshNames;
 
+    /// <remarks>Native: <c>shapeKeySets</c></remarks>
+    internal ShapeKeySet* _shapeKeySets;
+
     /// <summary>
     /// Array of materials used by the model.
     /// </summary>
@@ -78,12 +81,28 @@ public unsafe struct Model
     internal int MaterialCount;
 
     /// <summary>
-    /// Axis-Aligned Bounding Box encompassing the whole model.
+    /// Imported model bounds.
     /// </summary>
     /// <remarks>
     /// Native: <c>aabb</c>
     /// </remarks>
     public BoundingBox Aabb;
+
+    /// <summary>
+    /// Optional conservative local-space bounds for animated drawing.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>animatedAabb</c>
+    /// </remarks>
+    public BoundingBox AnimatedAabb;
+
+    /// <summary>
+    /// Whether animatedAabb overrides the default animated culling bounds.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>hasAnimatedAabb</c>
+    /// </remarks>
+    public bool HasAnimatedAabb;
 
     /// <summary>
     /// Skeleton hierarchy and bind pose used for skinning (NULL if non-skinned).

@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2022
             rid: win-x64
 
           - os: ubuntu-latest
@@ -68,6 +68,8 @@ jobs:
           -DBUILD_SHARED_LIBS=ON
           -DR3D_RAYLIB_VENDORED=ON
           -DR3D_ASSIMP_VENDORED=ON
+          -DR3D_SUPPORT_MANIFOLD=ON
+          -DR3D_MANIFOLD_VENDORED=ON
           -DR3D_BUILD_EXAMPLES=OFF
 
       - name: CMake configure (macOS arm64)
@@ -80,6 +82,8 @@ jobs:
           -DBUILD_SHARED_LIBS=ON
           -DR3D_RAYLIB_VENDORED=ON
           -DR3D_ASSIMP_VENDORED=ON
+          -DR3D_SUPPORT_MANIFOLD=ON
+          -DR3D_MANIFOLD_VENDORED=ON
           -DR3D_BUILD_EXAMPLES=OFF
 
       - name: CMake build

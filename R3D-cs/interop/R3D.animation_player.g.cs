@@ -135,6 +135,48 @@ public static unsafe partial class R3D
     public static partial void SetAnimationTime(ref AnimationPlayer player, int animIndex, float time);
 
     /// <summary>
+    /// Gets the current playback time in seconds.
+    /// </summary>
+    /// <returns>Current time in seconds, or 0 for an invalid animation index.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationTimeSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationTimeSeconds")]
+    public static partial float GetAnimationTimeSeconds(AnimationPlayer player, int animIndex);
+
+    /// <summary>
+    /// Gets the total animation duration in seconds.
+    /// </summary>
+    /// <returns>Duration in seconds, or 0 for an invalid animation.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationDurationSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationDurationSeconds")]
+    public static partial float GetAnimationDurationSeconds(AnimationPlayer player, int animIndex);
+
+    /// <summary>
+    /// Gets the normalized playback position.
+    /// </summary>
+    /// <returns>Playback position in the range [0, 1], or 0 for an invalid animation.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationNormalizedTime</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationNormalizedTime")]
+    public static partial float GetAnimationNormalizedTime(AnimationPlayer player, int animIndex);
+
+    /// <summary>
+    /// Sets playback time in seconds, clamped to the animation duration.
+    /// <para>
+    /// Unlike the existing R3D_SetAnimationTime, this function does not wrap. Useful for editor scrubbing, including seeking to the final frame. Does not advance time or update the skeleton pose.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationTimeSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationTimeSeconds")]
+    public static partial void SetAnimationTimeSeconds(ref AnimationPlayer player, int animIndex, float timeSeconds);
+
+    /// <summary>
     /// Gets the playback speed of an animation.
     /// </summary>
     /// <param name="player">Animation player.</param>
@@ -201,6 +243,51 @@ public static unsafe partial class R3D
     public static partial void AdvanceAnimationTime(ref AnimationPlayer player, float dt);
 
     /// <summary>
+    /// Reads a bone's exact local-space pose matrix.
+    /// <para>
+    /// Preserves scale, reflection and shear without decomposing the matrix. Does not evaluate animation or recompute the hierarchy.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationBoneLocalMatrix</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationBoneLocalMatrix")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetAnimationBoneLocalMatrix(ref AnimationPlayer player, int boneIndex, ref Matrix4x4 outMatrix);
+
+    /// <summary>
+    /// Replaces a bone's local-space pose with an affine matrix.
+    /// <para>
+    /// Does not recompute model-space matrices or upload to the GPU. Later animation sampling may overwrite this pose.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationBoneLocalMatrix</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneLocalMatrix")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetAnimationBoneLocalMatrix(ref AnimationPlayer player, int boneIndex, Matrix4x4 matrix);
+
+    /// <summary>
+    /// Sets a bone's desired model-space pose using an affine matrix.
+    /// <para>
+    /// Converts the target to local space using the current model-space parent matrix, or skeleton.rootBind for a root bone.
+    /// </para>
+    /// <para>
+    /// The parent's model pose must already be current and invertible. Supports parent indices in any valid order.
+    /// </para>
+    /// <para>
+    /// Does not recompute the hierarchy or upload to the GPU.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationBoneModelMatrix</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneModelMatrix")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetAnimationBoneModelMatrix(ref AnimationPlayer player, int boneIndex, Matrix4x4 matrix);
+
+    /// <summary>
     /// Computes the local-space transform of each bone for the current animation.
     /// <para>
     /// Samples and interpolates the current animation keyframes at the current playback time, and stores the resulting bone transforms in local space intoplayer-&gt;localPose. Does NOT advance animation time, and does NOT compute model-space transforms.
@@ -225,6 +312,43 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeAnimationModelPose")]
     public static partial void ComputeAnimationModelPose(ref AnimationPlayer player);
+
+    /// <summary>
+    /// Recomputes the complete model-space bone hierarchy.
+    /// <para>
+    /// Uses the current player-&gt;localPose without sampling animations. Supports parent indices in any valid hierarchy order.
+    /// </para>
+    /// <para>
+    /// Does not advance animation time or upload to the GPU. Unlike R3D_ComputeAnimationModelPose(), this does not restore the bind pose when no standalone animation is active.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for invalid pose data or hierarchy.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_RecomputeAnimationModelPose</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_RecomputeAnimationModelPose")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool RecomputeAnimationModelPose(ref AnimationPlayer player);
+
+    /// <summary>
+    /// Recomputes a bone and all of its descendants.
+    /// <para>
+    /// Updates model-space matrices in the selected subtree only. Other bone matrices remain unchanged.
+    /// </para>
+    /// <para>
+    /// The selected bone's parent model-space matrix must already be current. Supports non-contiguous and unordered bone indices.
+    /// </para>
+    /// <para>
+    /// Does not sample animation or upload to the GPU.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for invalid arguments or hierarchy.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_RecomputeAnimationModelPoseFromBone</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_RecomputeAnimationModelPoseFromBone")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool RecomputeAnimationModelPoseFromBone(ref AnimationPlayer player, int boneIndex);
 
     /// <summary>
     /// Computes both the local and model-space transforms for the current animation.
@@ -253,13 +377,107 @@ public static unsafe partial class R3D
     public static partial void UploadAnimationPose(ref AnimationPlayer player);
 
     /// <summary>
-    /// Updates the animation player: calculates and upload the current pose pose, then advances time.
+    /// Gets the current local-space transform of a bone.
     /// <para>
-    /// Equivalent to calling R3D_ComputeAnimationLocalPose() followed by R3D_ComputeAnimationModelPose() and R3D_AdvanceAnimationTime().
+    /// The returned transform is relative to the bone's parent. Reads the last computed local pose without evaluating animation or recomputing the hierarchy.
+    /// </para>
+    /// <para>
+    /// The matrix is decomposed into translation, rotation and scale. Arbitrary shear cannot be represented by Transform.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for an invalid bone or argument.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationBoneLocalTransform</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationBoneLocalTransform")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetAnimationBoneLocalTransform(ref AnimationPlayer player, int boneIndex, ref Transform outTransform);
+
+    /// <summary>
+    /// Sets the current local-space transform of a bone.
+    /// <para>
+    /// Replaces the bone's local pose with the supplied TRS transform. Does not advance animation, recompute the hierarchy, or upload the final pose to the GPU.
+    /// </para>
+    /// <para>
+    /// Subsequent animation sampling may overwrite this modification.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for an invalid bone or argument.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationBoneLocalTransform</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneLocalTransform")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetAnimationBoneLocalTransform(ref AnimationPlayer player, int boneIndex, Transform transform);
+
+    /// <summary>
+    /// Gets the current model-space transform of a bone.
+    /// <para>
+    /// Reads the last computed model pose and decomposes it into TRS. Sheared matrices cannot be represented exactly by Transform.
+    /// </para>
+    /// <para>
+    /// Does not evaluate animation or recompute the hierarchy.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for invalid arguments.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationBoneModelTransform</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationBoneModelTransform")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetAnimationBoneModelTransform(ref AnimationPlayer player, int boneIndex, ref Transform outTransform);
+
+    /// <summary>
+    /// Gets the exact model-space matrix of a bone.
+    /// <para>
+    /// Includes all ancestor transforms and the skeleton root correction, but excludes the model's placement in the scene.
+    /// </para>
+    /// <para>
+    /// Preserves shear and other matrix information.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for invalid arguments.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationBoneModelMatrix</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationBoneModelMatrix")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetAnimationBoneModelMatrix(ref AnimationPlayer player, int boneIndex, ref Matrix4x4 outMatrix);
+
+    /// <summary>
+    /// Sets a bone's desired model-space transform.
+    /// <para>
+    /// Converts the requested TRS into a local matrix using the current model-space transform of its parent (or skeleton.rootBind for roots).
+    /// </para>
+    /// <para>
+    /// Updates player-&gt;localPose only. Does not recompute modelPose, update children, advance animation, or upload to the GPU.
+    /// </para>
+    /// <para>
+    /// The parent's model pose must be current and invertible. The resulting local matrix may contain shear.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success. False if the input or parent is invalid.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationBoneModelTransform</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationBoneModelTransform")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetAnimationBoneModelTransform(ref AnimationPlayer player, int boneIndex, Transform transform);
+
+    /// <summary>
+    /// Advances animation time, evaluates the resulting pose and uploads it.
+    /// <para>
+    /// The resulting local/model pose and GPU skinning matrices correspond to the current playback time reported after this function returns.
+    /// </para>
+    /// <para>
+    /// Equivalent to calling R3D_AdvanceAnimationTime(), R3D_ComputeAnimationPose() and R3D_UploadAnimationPose(), in that order.
+    /// </para>
+    /// <para>
+    /// Paused animations and zero delta time still evaluate the current pose, allowing explicit time changes to be reflected immediately.
     /// </para>
     /// </summary>
     /// <param name="player">Animation player.</param>
-    /// <param name="dt">Delta time in seconds.</param>
+    /// <param name="dt">Nonnegative elapsed time in seconds.</param>
     /// <remarks>
     /// Native: <c>R3D_UpdateAnimationPlayer</c>
     /// </remarks>

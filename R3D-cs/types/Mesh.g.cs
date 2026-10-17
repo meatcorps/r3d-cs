@@ -19,7 +19,7 @@ namespace R3D_cs;
 /// Native: <c>R3D_Mesh</c>
 /// </remarks>
 [StructLayout(LayoutKind.Sequential)]
-public struct Mesh
+public unsafe struct Mesh
 {
     /// <summary>
     /// Offset in the internal VBO.
@@ -100,5 +100,13 @@ public struct Mesh
     /// Native: <c>aabb</c>
     /// </remarks>
     public BoundingBox Aabb;
+
+    /// <summary>
+    /// Optional non-owning CPU data link (NULL by default).
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>meshData</c>
+    /// </remarks>
+    internal MeshData* _meshData;
 
 }

@@ -27,7 +27,7 @@ public unsafe struct BoneMask
     /// <remarks>
     /// Native: <c>mask</c>
     /// </remarks>
-    public fixed int Mask[8];
+    public fixed uint Mask[8];
 
     /// <summary>
     /// Actual bones count.

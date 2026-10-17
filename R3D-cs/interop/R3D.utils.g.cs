@@ -18,6 +18,54 @@ public static unsafe partial class R3D
 {
 
     /// <summary>
+    /// Returns the render statistics.
+    /// <para>
+    /// Statistics reset at R3D_Begin() and accumulate through R3D_End(). Call after R3D_End() for complete results.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetRenderStats</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetRenderStats")]
+    public static partial RenderStats GetRenderStats();
+
+    /// <summary>
+    /// Draws a simple statistics overlay using raylib's 2D functions.
+    /// <para>
+    /// Call between BeginDrawing()/EndDrawing(), after R3D_End(). The overlay itself is not included in R3D's rendering statistics.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawRenderStats</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawRenderStats")]
+    public static partial void DrawRenderStats(int x, int y);
+
+    /// <summary>
+    /// Checks that an AABB contains finite coordinates and has correctly ordered minimum and maximum values.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_IsBoundingBoxValid</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_IsBoundingBoxValid")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool IsBoundingBoxValid(BoundingBox bounds);
+
+    /// <summary>
+    /// Expands a local-space AABB on both sides of each axis.
+    /// <para>
+    /// Padding must be finite and non-negative. The output remains unchanged if validation fails.
+    /// </para>
+    /// </summary>
+    /// <returns>True if the expanded bounds were calculated.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_ExpandBoundingBox</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ExpandBoundingBox")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ExpandBoundingBox(BoundingBox bounds, Vector3 padding, BoundingBox* result);
+
+    /// <summary>
     /// Retrieves a default white texture.
     /// <para>
     /// This texture is fully white (1,1,1,1), useful for default material properties.
@@ -150,5 +198,59 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMatrixViewProjection")]
     public static partial Matrix4x4 GetMatrixViewProjection();
+
+    /// <summary>
+    /// Compares two matrices for equality within a small tolerance.
+    /// <para>
+    /// This function checks if the two matrices are equal within a tolerance of 0.00001f.
+    /// </para>
+    /// </summary>
+    /// <param name="a">The first matrix to compare.</param>
+    /// <param name="b">The second matrix to compare.</param>
+    /// <returns>True if the matrices are equal within the tolerance, false otherwise.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_MatrixEquals</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixEquals")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool MatrixEquals(Matrix4x4 a, Matrix4x4 b);
+
+    /// <summary>
+    /// Create a complete TRS matrix.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_MatrixFromTRS</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTRS")]
+    public static partial Matrix4x4 MatrixFromTRS(Vector3 position, Quaternion rotation, Vector3 scale);
+
+    /// <summary>
+    /// Replace selected transform components while preserving the others.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_MatrixFromTR</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTR")]
+    public static partial Matrix4x4 MatrixFromTR(Matrix4x4 original, Vector3 position, Quaternion rotation);
+
+    /// <remarks>Native: <c>R3D_MatrixFromTS</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromTS")]
+    public static partial Matrix4x4 MatrixFromTS(Matrix4x4 original, Vector3 position, Vector3 scale);
+
+    /// <remarks>Native: <c>R3D_MatrixFromRS</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromRS")]
+    public static partial Matrix4x4 MatrixFromRS(Matrix4x4 original, Quaternion rotation, Vector3 scale);
+
+    /// <remarks>Native: <c>R3D_MatrixFromT</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromT")]
+    public static partial Matrix4x4 MatrixFromT(Matrix4x4 original, Vector3 position);
+
+    /// <remarks>Native: <c>R3D_MatrixFromR</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromR")]
+    public static partial Matrix4x4 MatrixFromR(Matrix4x4 original, Quaternion rotation);
+
+    /// <remarks>Native: <c>R3D_MatrixFromS</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MatrixFromS")]
+    public static partial Matrix4x4 MatrixFromS(Matrix4x4 original, Vector3 scale);
 
 }

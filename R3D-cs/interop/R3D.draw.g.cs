@@ -18,6 +18,96 @@ public static unsafe partial class R3D
 {
 
     /// <summary>
+    /// Projects a world position into the view's output target.
+    /// <para>
+    /// Uses the same camera and resolved presentation rectangle as R3D rendering. The returned position includes custom viewport offsets.
+    /// </para>
+    /// <para>
+    /// Does not require an active rendering session. Returns false for invalid input or an undefined projection.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_WorldToScreen</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_WorldToScreen")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool WorldToScreen(Vector3 worldPosition, View view, ref ScreenProjection result);
+
+    /// <summary>
+    /// Creates a world-space ray from an output-target pixel position.
+    /// <para>
+    /// Returns false if the position is outside the resolved presentation rectangle, including letterbox bars.
+    /// </para>
+    /// <para>
+    /// Perspective rays start at the camera position. Orthographic rays start on the camera's near plane.
+    /// </para>
+    /// <para>
+    /// Does not require an active rendering session.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_ScreenToWorldRay</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ScreenToWorldRay")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ScreenToWorldRay(Vector2 screenPosition, View view, ref Ray result);
+
+    /// <summary>
+    /// Convenience function for picking a world-space AABB.
+    /// <para>
+    /// Uses R3D_ScreenToWorldRay() followed by R3D_RaycastBoundingBox(). The bounding box must already be expressed in world coordinates.
+    /// </para>
+    /// <para>
+    /// Returns true on a collision, false otherwise.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_PickBoundingBox</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PickBoundingBox")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool PickBoundingBox(Vector2 screenPosition, View view, BoundingBox bounds, ref RayCollision result);
+
+    /// <summary>
+    /// Projects a local-space bounding box to an output-target rectangle.
+    /// <para>
+    /// Transforms the eight corners and clips box edges against the near plane. Coordinates are target pixels with a top-left origin.
+    /// </para>
+    /// <para>
+    /// Does not clamp the rectangle to the viewport. Returns false when no projectable portion remains.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_BoundingBoxToScreenRect</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_BoundingBoxToScreenRect")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool BoundingBoxToScreenRect(BoundingBox bounds, Matrix4x4 transform, View view, ref Rectangle result);
+
+    /// <summary>
+    /// Projects a mesh's local bounds into a target-space rectangle.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_MeshToScreenRect</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_MeshToScreenRect")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool MeshToScreenRect(Mesh mesh, Matrix4x4 transform, View view, ref Rectangle result);
+
+    /// <summary>
+    /// Projects a model's bounds into a target-space rectangle.
+    /// <para>
+    /// Uses the model's animated bounds override when one is configured.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_ModelToScreenRect</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ModelToScreenRect")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ModelToScreenRect(Model model, Matrix4x4 transform, View view, ref Rectangle result);
+
+    /// <summary>
     /// Begins a rendering session using the given raylib camera.
     /// <para>
     /// Rendering output is directed to the default framebuffer.
@@ -79,6 +169,24 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_End")]
     public static partial void End();
+
+    /// <summary>
+    /// Pushes temporary render-state overrides. Nested scopes combine their explicitly overridden fields. State is captured when each mesh draw is submitted.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_PushRenderMode</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PushRenderMode")]
+    public static partial void PushRenderMode(RenderMode mode);
+
+    /// <summary>
+    /// Restores the previous render-mode scope. Already submitted draw calls remain unaffected.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_PopRenderMode</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_PopRenderMode")]
+    public static partial void PopRenderMode();
 
     /// <summary>
     /// Begins a clustered draw pass.
@@ -190,6 +298,25 @@ public static unsafe partial class R3D
     public static partial void DrawMeshPro(Mesh mesh, Material material, Matrix4x4 transform);
 
     /// <summary>
+    /// Queues a mesh draw with GPU shape-key deformation.
+    /// <para>
+    /// Shares the original mesh and immutable morph data. Captures the instance's current weights at submission.
+    /// </para>
+    /// <para>
+    /// Does not call CPU ApplyShapeKeys().
+    /// </para>
+    /// <para>
+    /// Returns false if the input is invalid or GPU resources cannot support the requested draw.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawShapeKeyMeshPro</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawShapeKeyMeshPro")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool DrawShapeKeyMeshPro(Mesh mesh, Material material, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, Matrix4x4 transform);
+
+    /// <summary>
     /// Queues an instanced mesh draw command.
     /// <para>
     /// Draws multiple instances using the provided instance buffer. Does nothing if the number of instances is &lt; = 0.
@@ -271,6 +398,47 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshPro")]
     public static partial void DrawAnimatedMeshPro(Mesh mesh, Material material, AnimationPlayer player, Matrix4x4 transform);
+
+    /// <summary>
+    /// Draws an animated mesh with explicit local-space culling bounds.
+    /// <para>
+    /// The bounds must contain all positions produced by skeletal animation, IK and other deformations for this draw.
+    /// </para>
+    /// <para>
+    /// Does not modify the original mesh. Invalid bounds cause the draw to be rejected.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedMeshProBounds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedMeshProBounds")]
+    public static partial void DrawAnimatedMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, BoundingBox bounds, Matrix4x4 transform);
+
+    /// <summary>
+    /// GPU morphing followed by skeletal animation.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedShapeKeyMeshPro</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedShapeKeyMeshPro")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool DrawAnimatedShapeKeyMeshPro(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, Matrix4x4 transform);
+
+    /// <summary>
+    /// Draws a GPU-morphed and skinned mesh with explicit bounds.
+    /// <para>
+    /// The bounds must contain the final geometry after BOTH morph deformation and skeletal skinning.
+    /// </para>
+    /// <para>
+    /// The existing GPU morph-weight evaluation is preserved. Invalid bounds cause the draw to be rejected.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedShapeKeyMeshProBounds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedShapeKeyMeshProBounds")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool DrawAnimatedShapeKeyMeshProBounds(Mesh mesh, Material material, AnimationPlayer player, ref ShapeKeyGpu gpu, ref ShapeKeyInstance instance, BoundingBox bounds, Matrix4x4 transform);
 
     /// <summary>
     /// Queues a model draw command with position and uniform scale.
@@ -402,6 +570,21 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedModelPro")]
     public static partial void DrawAnimatedModelPro(Model model, AnimationPlayer player, Matrix4x4 transform);
+
+    /// <summary>
+    /// Draws an animated model with explicit local-space culling bounds.
+    /// <para>
+    /// The bounds must contain all animated meshes, including their skeletal, IK, spring and other deformations.
+    /// </para>
+    /// <para>
+    /// Does not modify the original model. Invalid bounds cause the draw to be rejected.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_DrawAnimatedModelProBounds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_DrawAnimatedModelProBounds")]
+    public static partial void DrawAnimatedModelProBounds(Model model, AnimationPlayer player, BoundingBox bounds, Matrix4x4 transform);
 
     /// <summary>
     /// Queues an instanced animated model draw command.

@@ -30,12 +30,28 @@ public unsafe struct Animation
     internal AnimationChannel* _channels;
 
     /// <summary>
-    /// Total number of channels in this animation.
+    /// Total number of skeletal channels.
     /// </summary>
     /// <remarks>
     /// Native: <c>channelCount</c>
     /// </remarks>
     internal int ChannelCount;
+
+    /// <summary>
+    /// Array of morph animation channels, one per animated mesh.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>morphChannels</c>
+    /// </remarks>
+    internal MorphAnimationChannel* _morphChannels;
+
+    /// <summary>
+    /// Total number of morph channels.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>morphChannelCount</c>
+    /// </remarks>
+    internal int MorphChannelCount;
 
     /// <summary>
     /// Playback rate; number of animation ticks per second.
@@ -94,5 +110,10 @@ public unsafe struct Animation
     /// <see cref="Channels"/> as a <see cref="Span{T}"/>.
     /// </summary>
     public Span<AnimationChannel> Channels => _channels != null ? new(_channels, ChannelCount) : default;
+
+    /// <summary>
+    /// <see cref="MorphChannels"/> as a <see cref="Span{T}"/>.
+    /// </summary>
+    public Span<MorphAnimationChannel> MorphChannels => _morphChannels != null ? new(_morphChannels, MorphChannelCount) : default;
 
 }

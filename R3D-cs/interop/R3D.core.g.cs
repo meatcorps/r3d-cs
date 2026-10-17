@@ -24,7 +24,11 @@ public static unsafe partial class R3D
     /// </summary>
     public const string NativeLibName = "r3d";
 
-    public const string R3D_VERSION = "0.12.0-dev.175+0b69d37";
+    public const string R3D_VERSION = "0.12.0-dev.251+b58b372";
+
+    /// <remarks>Native: <c>R3D_SetShaderDiagnosticCallback</c></remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetShaderDiagnosticCallback")]
+    public static partial void SetShaderDiagnosticCallback(ShaderDiagnosticCallback callback, IntPtr userData);
 
     /// <summary>
     /// Sets a configuration hint.
@@ -190,6 +194,27 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SetUpscaleMode")]
     public static partial void SetUpscaleMode(UpscaleMode mode);
+
+    /// <summary>
+    /// Sets FSR1 RCAS sharpening strength.
+    /// <para>
+    /// Range: 0.0 (weakest) to 1.0 (strongest). This controls RCAS when FSR1 upscaling is active.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetFsr1Sharpness</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetFsr1Sharpness")]
+    public static partial void SetFsr1Sharpness(float sharpness);
+
+    /// <summary>
+    /// Gets the configured FSR1 RCAS sharpening strength.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetFsr1Sharpness</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetFsr1Sharpness")]
+    public static partial float GetFsr1Sharpness();
 
     /// <summary>
     /// Retrieves the current downscaling mode used for rendering.

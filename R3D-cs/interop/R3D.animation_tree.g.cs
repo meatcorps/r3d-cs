@@ -88,6 +88,97 @@ public static unsafe partial class R3D
     public static partial void UpdateAnimationTree(ref AnimationTree tree, float dt);
 
     /// <summary>
+    /// Evaluate imported morph animation through AnimationTree.
+    /// <para>
+    /// Uses the current animation-node times, blend parameters, switch weights and state-machine transition weights.
+    /// </para>
+    /// <para>
+    /// Call after R3D_UpdateAnimationTree(), or after R3D_AdvanceAnimationTree() when updating manually.
+    /// </para>
+    /// <para>
+    /// meshIndex corresponds to R3D_Model.meshes[].
+    /// </para>
+    /// <para>
+    /// A mesh with no morph tracks in the animation library is left unchanged.
+    /// </para>
+    /// <para>
+    /// A clip without a morph channel contributes the shape key's imported default weight.
+    /// </para>
+    /// <para>
+    /// Bone masks do not affect morph weights. Morph weights are evaluated per mesh, not per bone.
+    /// </para>
+    /// <para>
+    /// Updates instance weights only. No CPU deformation or GPU geometry upload is performed.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success, false for invalid data or an incompatible morph target count.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_EvaluateAnimationTreeMorphs</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_EvaluateAnimationTreeMorphs")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool EvaluateAnimationTreeMorphs(ref AnimationTree tree, int meshIndex, ref ShapeKeyInstance instance);
+
+    /// <summary>
+    /// Advances animation tree playback and transition states.
+    /// <para>
+    /// Does not evaluate bone transforms or upload data to the GPU. A zero delta time is valid. Negative or non-finite values are rejected.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_AdvanceAnimationTree</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_AdvanceAnimationTree")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool AdvanceAnimationTree(ref AnimationTree tree, float dt);
+
+    /// <summary>
+    /// Evaluates the animation tree into player.localPose.
+    /// <para>
+    /// Does not advance animation time, compute model-space matrices, or upload the pose to the GPU.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_ComputeAnimationTreeLocalPose</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeAnimationTreeLocalPose")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ComputeAnimationTreeLocalPose(ref AnimationTree tree);
+
+    /// <summary>
+    /// Evaluates the local pose and optionally extracts root motion.
+    /// <para>
+    /// Root-motion state is updated during sampling. Normally this should be called once after each animation tree advance.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_ComputeAnimationTreeLocalPoseEx</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeAnimationTreeLocalPoseEx")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ComputeAnimationTreeLocalPoseEx(ref AnimationTree tree, ref Transform rootMotion, ref Transform rootDistance);
+
+    /// <summary>
+    /// Computes model-space bone matrices from player.localPose.
+    /// <para>
+    /// Allows the caller to modify local matrices after tree evaluation and before computing the final model-space pose.
+    /// </para>
+    /// <para>
+    /// Does not advance animation time or upload to the GPU.
+    /// </para>
+    /// </summary>
+    /// <returns>True on success.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_ComputeAnimationTreeModelPose</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeAnimationTreeModelPose")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool ComputeAnimationTreeModelPose(ref AnimationTree tree);
+
+    /// <summary>
     /// Updates the animation tree: calculates blended pose, sets and uploads the pose through associated animation player.
     /// <para>
     /// Set the rootMotion and/or rootDistance pointers to get root motion information. Divide rootMotion translation vector by dt to get root bone speed.
@@ -127,6 +218,32 @@ public static unsafe partial class R3D
     [LibraryImport(NativeLibName, EntryPoint = "R3D_AddAnimationNode")]
     [return: MarshalAs(UnmanagedType.I1)]
     public static partial bool AddAnimationNode(AnimationTreeNode parent, AnimationTreeNode node, int inputIndex);
+
+    /// <summary>
+    /// Gets a child node by index.
+    /// <para>
+    /// Supports Blend2, Add2, Switch, State Machine and StmX nodes. For State Machines, the index refers to a state.
+    /// </para>
+    /// </summary>
+    /// <returns>Pointer to the child node, or NULL if unavailable.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationNode</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationNode")]
+    public static partial AnimationTreeNode GetAnimationNode(AnimationTreeNode parent, int inputIndex);
+
+    /// <summary>
+    /// Gets the selected animation leaf within a node hierarchy.
+    /// <para>
+    /// Traverses Switch, State Machine and StmX nodes. During crossfades, returns the selected destination branch. Returns NULL for Blend2/Add2 nodes because multiple animations contribute.
+    /// </para>
+    /// </summary>
+    /// <returns>Pointer to the selected animation leaf, or NULL.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetActiveAnimationNode</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetActiveAnimationNode")]
+    public static partial AnimationTreeNode GetActiveAnimationNode(AnimationTreeNode node);
 
     /// <summary>
     /// Creates animation node of type Animation.
@@ -300,6 +417,48 @@ public static unsafe partial class R3D
     public static partial AnimationNodeParams GetAnimationNodeParams(AnimationTreeNode node);
 
     /// <summary>
+    /// Gets the current time of an AnimationTree animation leaf in seconds.
+    /// </summary>
+    /// <returns>Current time in seconds, or 0 for an invalid/non-animation node.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationNodeTimeSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationNodeTimeSeconds")]
+    public static partial float GetAnimationNodeTimeSeconds(AnimationTreeNode node);
+
+    /// <summary>
+    /// Gets the duration of an AnimationTree animation leaf in seconds.
+    /// </summary>
+    /// <returns>Duration in seconds, or 0 for an invalid/non-animation node.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationNodeDurationSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationNodeDurationSeconds")]
+    public static partial float GetAnimationNodeDurationSeconds(AnimationTreeNode node);
+
+    /// <summary>
+    /// Gets the normalized playback time of an AnimationTree animation leaf.
+    /// </summary>
+    /// <returns>Position in [0, 1], or 0 for an invalid/non-animation node.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_GetAnimationNodeNormalizedTime</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimationNodeNormalizedTime")]
+    public static partial float GetAnimationNodeNormalizedTime(AnimationTreeNode node);
+
+    /// <summary>
+    /// Seeks an AnimationTree animation leaf to a time in seconds.
+    /// <para>
+    /// Clamps the requested time and resets the root-motion reference so that seeking itself does not produce an artificial root-motion delta. Does not evaluate or upload the resulting pose.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetAnimationNodeTimeSeconds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetAnimationNodeTimeSeconds")]
+    public static partial void SetAnimationNodeTimeSeconds(ref AnimationTree tree, AnimationTreeNode node, float timeSeconds);
+
+    /// <summary>
     /// Sets parameters of animation node Blend2.
     /// </summary>
     /// <param name="node">Animation node of type Blend2.</param>
@@ -429,5 +588,22 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeBoneMask")]
     public static partial BoneMask ComputeBoneMask(ref Skeleton skeleton, byte** boneNames, int boneNameCount);
+
+    /// <summary>
+    /// Automatically computes a bone mask from an animation's channels.
+    /// <para>
+    /// Includes every bone with at least one translation, rotation or scale key. Channels without keyframes are ignored.
+    /// </para>
+    /// <para>
+    /// The generated mask can be used with Blend2 and Add2 nodes. No hierarchy expansion or value-based movement detection is performed.
+    /// </para>
+    /// </summary>
+    /// <param name="animation">Animation used to generate the mask.</param>
+    /// <returns>Generated mask, or a zeroed structure on invalid input. A valid animation with no animated bones produces an empty mask with boneCount set to the animation's bone count.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_ComputeAnimationBoneMask</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ComputeAnimationBoneMask")]
+    public static partial BoneMask ComputeAnimationBoneMask(ref Animation animation);
 
 }

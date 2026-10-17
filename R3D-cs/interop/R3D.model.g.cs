@@ -110,6 +110,29 @@ public static unsafe partial class R3D
     public static partial void UnloadModel(Model model, [MarshalAs(UnmanagedType.I1)] bool unloadMaterials);
 
     /// <summary>
+    /// Sets the default local-space animated culling bounds for a model.
+    /// <para>
+    /// Does not modify the imported model.aabb. Existing animated model draw functions use these bounds automatically.
+    /// </para>
+    /// </summary>
+    /// <returns>False if the model pointer or bounds are invalid.</returns>
+    /// <remarks>
+    /// Native: <c>R3D_SetModelAnimatedBounds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetModelAnimatedBounds")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetModelAnimatedBounds(ref Model model, BoundingBox bounds);
+
+    /// <summary>
+    /// Clears configured animated bounds and restores model.aabb fallback.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_ClearModelAnimatedBounds</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_ClearModelAnimatedBounds")]
+    public static partial void ClearModelAnimatedBounds(ref Model model);
+
+    /// <summary>
     /// Returns the index of the mesh with the given name.
     /// </summary>
     /// <param name="model">The model to search in.</param>

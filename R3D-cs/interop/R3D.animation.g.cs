@@ -91,4 +91,39 @@ public static unsafe partial class R3D
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetAnimation", StringMarshalling = StringMarshalling.Utf8)]
     public static partial Animation* GetAnimation(AnimationLib animLib, string name);
 
+    /// <summary>
+    /// Find the imported morph channel for a mesh.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetMorphAnimationChannel</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetMorphAnimationChannel")]
+    public static partial MorphAnimationChannel* GetMorphAnimationChannel(ref Animation animation, int meshIndex);
+
+    /// <summary>
+    /// Sample one imported morph-weight curve.
+    /// <para>
+    /// timeTicks is in animation ticks, not seconds. If the clip does not animate this mesh, returns defaultWeight through result.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SampleMorphAnimationWeight</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SampleMorphAnimationWeight")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SampleMorphAnimationWeight(ref Animation animation, int meshIndex, int targetIndex, float timeTicks, float defaultWeight, ref float result);
+
+    /// <summary>
+    /// Evaluate all morph weights for one mesh.
+    /// <para>
+    /// Only updates instance weights. Does not deform CPU vertices or upload GPU geometry.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_EvaluateMorphAnimation</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_EvaluateMorphAnimation")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool EvaluateMorphAnimation(ref Animation animation, int meshIndex, float timeTicks, ref ShapeKeyInstance instance);
+
 }

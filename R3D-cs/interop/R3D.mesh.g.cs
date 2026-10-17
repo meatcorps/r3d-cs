@@ -283,4 +283,23 @@ public static unsafe partial class R3D
     [return: MarshalAs(UnmanagedType.I1)]
     public static partial bool UpdateMesh(ref Mesh mesh, MeshData data, BoundingBox* aabb);
 
+    /// <summary>
+    /// Link CPU geometry to an existing GPU mesh. The caller retains ownership of the data and its memory.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_LinkMeshData</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_LinkMeshData")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool LinkMeshData(ref Mesh mesh, ref MeshData data);
+
+    /// <summary>
+    /// Remove the CPU link without freeing any geometry.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_UnlinkMeshData</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_UnlinkMeshData")]
+    public static partial void UnlinkMeshData(ref Mesh mesh);
+
 }
