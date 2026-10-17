@@ -71,6 +71,7 @@ jobs:
           -DR3D_SUPPORT_MANIFOLD=ON
           -DR3D_MANIFOLD_VENDORED=ON
           -DR3D_BUILD_EXAMPLES=OFF
+          -DR3D_BUILD_TESTS=OFF
 
       - name: CMake configure (macOS arm64)
         if: matrix.rid == 'osx-arm64'
@@ -85,6 +86,7 @@ jobs:
           -DR3D_SUPPORT_MANIFOLD=ON
           -DR3D_MANIFOLD_VENDORED=ON
           -DR3D_BUILD_EXAMPLES=OFF
+          -DR3D_BUILD_TESTS=OFF
 
       - name: CMake build
         run: cmake --build External/r3d/build --config Release
