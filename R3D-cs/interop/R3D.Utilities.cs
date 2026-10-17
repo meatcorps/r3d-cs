@@ -462,4 +462,407 @@ public static unsafe partial class R3D
         fixed (ScreenShader* ptr = shaders)
             SetScreenShaderChain(stage, ptr, shaders.Length);
     }
+
+
+    /// <summary>
+    ///     Maps a subrange of an instance buffer to a typed span for direct CPU access.
+    ///     Call <see cref="UnmapInstances" /> when finished writing.
+    /// </summary>
+    /// <typeparam name="T">The unmanaged type stored in the attribute buffer.</typeparam>
+    /// <param name="buffer">The instance buffer to map.</param>
+    /// <param name="flag">The instance attribute to map.</param>
+    /// <param name="offset">Starting instance index.</param>
+    /// <param name="count">Number of instances to map.</param>
+    /// <param name="discard">Whether to invalidate existing contents in the mapped range.</param>
+    /// <returns>A span over the mapped GPU memory, valid until the buffer is unmapped.</returns>
+    public static Span<T> MapInstancesEx<T>(
+        InstanceBuffer buffer,
+        InstanceFlags flag,
+        int offset,
+        int count,
+        bool discard = false) where T : unmanaged
+    {
+        return new Span<T>(
+            (void*)MapInstancesEx(buffer, flag, offset, count, discard),
+            count);
+    }
+
+    /// <summary>
+    ///     Sets a uniform value on a surface effect using a typed reference
+    ///     instead of a raw pointer.
+    /// </summary>
+    /// <typeparam name="T">The unmanaged type of the uniform value.</typeparam>
+    /// <param name="effect">The surface effect to update.</param>
+    /// <param name="name">The uniform name.</param>
+    /// <param name="value">The uniform value.</param>
+    public static void SetSurfaceEffectUniform<T>(
+        SurfaceEffect effect,
+        string name,
+        ref T value) where T : unmanaged
+    {
+        fixed (T* ptr = &value)
+            SetSurfaceEffectUniform(effect, name, ptr);
+    }
+
+    /// <summary>
+    ///     Populates four line points to form a rectangle in the XY plane.
+    ///     Existing point colors and widths are preserved.
+    /// </summary>
+    /// <param name="points">Destination span containing at least four line points.</param>
+    /// <param name="center">Center of the rectangle.</param>
+    /// <param name="size">Width and height of the rectangle.</param>
+    public static void SetLineRectangle(
+        Span<LinePoint> points,
+        Vector3 center,
+        Vector2 size)
+    {
+        fixed (LinePoint* ptr = points[..4])
+            SetLineRectangle(ptr, center, size);
+    }
+
+    /// <summary>
+    ///     Populates four line points to form a circle using quarter-circle arcs.
+    ///     Existing point colors and widths are preserved.
+    /// </summary>
+    /// <param name="points">Destination span containing at least four line points.</param>
+    /// <param name="center">Center of the circle.</param>
+    /// <param name="radius">Radius of the circle.</param>
+    public static void SetLineCircle(
+        Span<LinePoint> points,
+        Vector3 center,
+        float radius)
+    {
+        fixed (LinePoint* ptr = points[..4])
+            SetLineCircle(ptr, center, radius);
+    }
+
+    /// <summary>
+    ///     Populates a line path with points forming an ellipse in the XY plane.
+    ///     The number of generated points is determined by the span length.
+    /// </summary>
+    /// <param name="points">Destination span containing at least three line points.</param>
+    /// <param name="center">Center of the ellipse.</param>
+    /// <param name="radii">Horizontal and vertical radii.</param>
+    public static void SetLineEllipse(
+        Span<LinePoint> points,
+        Vector3 center,
+        Vector2 radii)
+    {
+        if (points.Length < 3)
+            return;
+
+        fixed (LinePoint* ptr = points)
+            SetLineEllipse(ref *ptr, points.Length, center, radii);
+    }
+
+    /// <summary>
+    ///     Configures two line points as the endpoints of an arc.
+    ///     Existing point colors and widths are preserved.
+    /// </summary>
+    /// <param name="points">Destination span containing at least two line points.</param>
+    /// <param name="start">Starting position of the arc.</param>
+    /// <param name="end">Ending position of the arc.</param>
+    /// <param name="normal">Normal defining the arc plane.</param>
+    /// <param name="sweep">Sweep angle in radians.</param>
+    /// <param name="subdivisions">Number of subdivisions used to render the arc.</param>
+    public static void SetLineArc(
+        Span<LinePoint> points,
+        Vector3 start,
+        Vector3 end,
+        Vector3 normal,
+        float sweep,
+        int subdivisions)
+    {
+        fixed (LinePoint* ptr = points[..2])
+            SetLineArc(ptr, start, end, normal, sweep, subdivisions);
+    }
+
+    /// <summary>
+    ///     Computes the eight corner positions of a view frustum.
+    /// </summary>
+    /// <param name="invViewProj">Inverse view-projection matrix.</param>
+    /// <param name="corners">Destination span containing at least eight vectors.</param>
+    public static void ComputeFrustumCorners(
+        Matrix4x4 invViewProj,
+        Span<Vector3> corners)
+    {
+        fixed (Vector3* ptr = corners[..8])
+            ComputeFrustumCorners(invViewProj, ptr);
+    }
+
+    /// <summary>
+    ///     Replaces the visible points in an existing point cloud.
+    ///     Reuses the point cloud's allocated GPU buffers.
+    /// </summary>
+    /// <param name="cloud">The point cloud to update.</param>
+    /// <param name="points">The new collection of visible points.</param>
+    /// <returns>True if the point cloud was updated successfully.</returns>
+    public static bool UpdatePointCloud(
+        ref PointCloud cloud,
+        ReadOnlySpan<PointCloudPoint> points)
+    {
+        fixed (PointCloudPoint* ptr = points)
+        {
+            return UpdatePointCloud(
+                ref cloud,
+                ref Unsafe.AsRef<PointCloudPoint>(ptr),
+                points.Length);
+        }
+    }
+
+    /// <summary>
+    ///     Appends vertices and indices to an existing CPU-side mesh data container.
+    ///     The destination container grows when additional capacity is required.
+    /// </summary>
+    /// <param name="meshData">The mesh data container to modify.</param>
+    /// <param name="vertices">Vertices to append.</param>
+    /// <param name="indices">Indices to append.</param>
+    public static void AppendMeshData(
+        ref MeshData meshData,
+        ReadOnlySpan<Vertex> vertices,
+        ReadOnlySpan<uint> indices)
+    {
+        fixed (Vertex* vertexPtr = vertices)
+        fixed (uint* indexPtr = indices)
+        {
+            AppendMeshData(
+                ref meshData,
+                ref Unsafe.AsRef<Vertex>(vertexPtr),
+                vertices.Length,
+                ref Unsafe.AsRef<uint>(indexPtr),
+                indices.Length);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a manifold extrusion from a two-dimensional polygon outline.
+    /// </summary>
+    /// <param name="mesh">Destination mesh to populate with the extrusion.</param>
+    /// <param name="outline">Ordered polygon vertices defining the outline.</param>
+    /// <param name="height">Extrusion height.</param>
+    /// <returns>The manifold operation result.</returns>
+    public static ManifoldResult ManifoldExtrude(
+        ref Mesh mesh,
+        ReadOnlySpan<Vector2> outline,
+        float height)
+    {
+        fixed (Vector2* ptr = outline)
+        {
+            return ManifoldExtrude(
+                ref mesh,
+                ref Unsafe.AsRef<Vector2>(ptr),
+                outline.Length,
+                height);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a spring chain from a collection of bone descriptors.
+    ///     The native implementation sorts the descriptors into parent-child order.
+    /// </summary>
+    /// <param name="player">Animation player containing the skeleton.</param>
+    /// <param name="descriptors">Bone descriptors defining the spring chain.</param>
+    /// <returns>The created spring chain, or a default value if creation fails.</returns>
+    public static SpringChain LoadSpringChain(
+        ref AnimationPlayer player,
+        ReadOnlySpan<SpringChainBoneDesc> descriptors)
+    {
+        if (descriptors.IsEmpty)
+            return default;
+
+        fixed (SpringChainBoneDesc* ptr = descriptors)
+        {
+            return LoadSpringChain(
+                ref player,
+                ref *ptr,
+                descriptors.Length);
+        }
+    }
+
+    /// <summary>
+    ///     Expands a bounding box by the specified padding along each axis.
+    /// </summary>
+    /// <param name="bounds">Original bounding box.</param>
+    /// <param name="padding">Padding to apply along each axis.</param>
+    /// <param name="result">The expanded bounding box.</param>
+    /// <returns>True if the expanded bounding box was calculated successfully.</returns>
+    public static bool ExpandBoundingBox(
+        BoundingBox bounds,
+        Vector3 padding,
+        out BoundingBox result)
+    {
+        result = default;
+
+        fixed (BoundingBox* ptr = &result)
+            return ExpandBoundingBox(bounds, padding, ptr);
+    }
+
+    /// <summary>
+    ///     Calculates conservative bounds for a mesh affected by shape keys.
+    /// </summary>
+    /// <param name="baseBounds">The original mesh bounding box.</param>
+    /// <param name="gpu">GPU shape-key data.</param>
+    /// <param name="instance">Current shape-key instance state.</param>
+    /// <param name="result">The calculated bounding box.</param>
+    /// <returns>True if the bounds were calculated successfully.</returns>
+    public static bool CalculateConservativeShapeKeyBounds(
+        BoundingBox baseBounds,
+        ref ShapeKeyGpu gpu,
+        ref ShapeKeyInstance instance,
+        out BoundingBox result)
+    {
+        result = default;
+
+        fixed (BoundingBox* ptr = &result)
+        {
+            return CalculateConservativeShapeKeyBounds(
+                baseBounds,
+                ref gpu,
+                ref instance,
+                ptr);
+        }
+    }
+
+    /// <summary>
+    ///     Loads an animation library from a memory buffer.
+    /// </summary>
+    /// <param name="data">The file contents.</param>
+    /// <param name="hint">Hint identifying the source file format.</param>
+    /// <returns>The loaded animation library.</returns>
+    public static AnimationLib LoadAnimationLibFromMemory(
+        ReadOnlySpan<byte> data,
+        string hint)
+    {
+        fixed (byte* ptr = data)
+            return LoadAnimationLibFromMemory(ptr, (uint)data.Length, hint);
+    }
+
+    /// <summary>
+    ///     Creates an importer from model data stored in memory.
+    /// </summary>
+    /// <param name="data">The source model data.</param>
+    /// <param name="hint">Hint identifying the source file format.</param>
+    /// <param name="flags">Import processing options.</param>
+    /// <returns>The loaded importer.</returns>
+    public static Importer LoadImporterFromMemory(
+        ReadOnlySpan<byte> data,
+        string hint,
+        ImportFlags flags)
+    {
+        fixed (byte* ptr = data)
+            return LoadImporterFromMemory(ptr, (uint)data.Length, hint, flags);
+    }
+
+    /// <summary>
+    ///     Loads a model from data stored in memory using default import options.
+    /// </summary>
+    /// <param name="data">The source model data.</param>
+    /// <param name="hint">Hint identifying the source file format.</param>
+    /// <returns>The loaded model.</returns>
+    public static Model LoadModelFromMemory(
+        ReadOnlySpan<byte> data,
+        string hint)
+    {
+        fixed (byte* ptr = data)
+            return LoadModelFromMemory(ptr, (uint)data.Length, hint);
+    }
+
+    /// <summary>
+    ///     Loads a model from data stored in memory with custom import options.
+    /// </summary>
+    /// <param name="data">The source model data.</param>
+    /// <param name="hint">Hint identifying the source file format.</param>
+    /// <param name="flags">Import processing options.</param>
+    /// <returns>The loaded model.</returns>
+    public static Model LoadModelFromMemoryEx(
+        ReadOnlySpan<byte> data,
+        string hint,
+        ImportFlags flags)
+    {
+        fixed (byte* ptr = data)
+        {
+            return LoadModelFromMemoryEx(
+                ptr, (uint)data.Length, hint, flags);
+        }
+    }
+
+    /// <summary>
+    ///     Loads a skeleton from model data stored in memory.
+    /// </summary>
+    /// <param name="data">The source model data.</param>
+    /// <param name="hint">Hint identifying the source file format.</param>
+    /// <returns>The loaded skeleton.</returns>
+    public static Skeleton LoadSkeletonFromMemory(
+        ReadOnlySpan<byte> data,
+        string hint)
+    {
+        fixed (byte* ptr = data)
+            return LoadSkeletonFromMemory(ptr, (uint)data.Length, hint);
+    }
+
+    /// <summary>
+    ///     Loads an R3D texture from encoded image data in memory.
+    /// </summary>
+    /// <param name="fileType">Image file type or extension.</param>
+    /// <param name="data">Encoded image data.</param>
+    /// <param name="isColor">Whether the texture contains color data.</param>
+    /// <returns>The loaded texture.</returns>
+    public static Texture2D LoadTextureFromMemory(
+        string fileType,
+        ReadOnlySpan<byte> data,
+        bool isColor)
+    {
+        fixed (byte* ptr = data)
+            return LoadTextureFromMemory(
+                fileType, ptr, data.Length, isColor);
+    }
+
+    /// <summary>
+    ///     Loads an R3D texture from encoded image data with custom
+    ///     wrapping and filtering options.
+    /// </summary>
+    /// <param name="fileType">Image file type or extension.</param>
+    /// <param name="data">Encoded image data.</param>
+    /// <param name="wrap">Texture wrapping mode.</param>
+    /// <param name="filter">Texture filtering mode.</param>
+    /// <param name="isColor">Whether the texture contains color data.</param>
+    /// <returns>The loaded texture.</returns>
+    public static Texture2D LoadTextureFromMemoryEx(
+        string fileType,
+        ReadOnlySpan<byte> data,
+        TextureWrap wrap,
+        TextureFilter filter,
+        bool isColor)
+    {
+        fixed (byte* ptr = data)
+        {
+            return LoadTextureFromMemoryEx(
+                fileType,
+                ptr,
+                data.Length,
+                wrap,
+                filter,
+                isColor);
+        }
+    }
+
+    /// <summary>
+    ///     Loads a text font from font data stored in memory.
+    /// </summary>
+    /// <param name="data">The source font data.</param>
+    /// <returns>The loaded text font, or a default value for empty data.</returns>
+    public static TextFont LoadTextFontFromMemory(
+        ReadOnlySpan<byte> data)
+    {
+        if (data.IsEmpty)
+            return default;
+
+        fixed (byte* ptr = data)
+        {
+            return LoadTextFontFromMemory(
+                ref *(sbyte*)ptr,
+                (IntPtr)data.Length);
+        }
+    }
+
 }
