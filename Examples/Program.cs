@@ -40,7 +40,14 @@ public static class ExampleList
         new("Multiview", Multiview.Main),
         new("Stencil", Stencil.Main),
         new("ToTexture", ToTexture.Main),
-        new("VolumetricFog", VolumetricFog.Main)
+        new("VolumetricFog", VolumetricFog.Main),
+        new("EffectShowroom", EffectShowroom.Main),
+        new("LineShowroom", LineShowroom.Main),
+        new("ManifoldDemo", ManifoldDemo.Main),
+        new("ManifoldOperations", ManifoldOperations.Main),
+        new("PointCloudShowroom", PointCloudShowroom.Main),
+        new("ProceduralShowroom", ProceduralShowroom.Main),
+        new("SpriteSurface", SpriteSurface.Main)
     ];
 
     public static ExampleInfo? GetExample(string name)
