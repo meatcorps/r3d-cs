@@ -24,7 +24,7 @@ public static unsafe partial class R3D
     /// </summary>
     public const string NativeLibName = "r3d";
 
-    public const string R3D_VERSION = "0.12.0-dev.251+b58b372";
+    public const string R3D_VERSION = "0.12.0-dev.252+30dbcb1";
 
     /// <remarks>Native: <c>R3D_SetShaderDiagnosticCallback</c></remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_SetShaderDiagnosticCallback")]
