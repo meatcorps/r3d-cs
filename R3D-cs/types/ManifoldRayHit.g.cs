@@ -25,4 +25,7 @@ public struct ManifoldRayHit
     /// <remarks>Native: <c>normal</c></remarks>
     public ManifoldVec3 Normal;
 
+    /// <remarks>Native: <c>crossing</c></remarks>
+    public int Crossing;
+
 }

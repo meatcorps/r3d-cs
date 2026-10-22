@@ -18,6 +18,32 @@ public static unsafe partial class R3D
 {
 
     /// <summary>
+    /// Bind an existing internal R3D GPU buffer to a Raylib shader sampler.
+    /// <para>
+    /// Does not copy or transfer the texture. R3D retains ownership.
+    /// </para>
+    /// <para>
+    /// Returns false if the target is unavailable.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetRaylibShaderBuffer</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetRaylibShaderBuffer")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetRaylibShaderBuffer(Shader shader, int uniformLocation, ShaderBuffer buffer);
+
+    /// <summary>
+    /// Same operation, with an explicit R3D virtual mip level.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_SetRaylibShaderBufferLevel</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_SetRaylibShaderBufferLevel")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool SetRaylibShaderBufferLevel(Shader shader, int uniformLocation, ShaderBuffer buffer, int mipLevel);
+
+    /// <summary>
     /// Loads a texture from the specified file path.
     /// <para>
     /// If 'isColor' is true, the texture is loaded using the currently defined color space (sRGB by default). The wrap and filter modes are taken from the current global default state.

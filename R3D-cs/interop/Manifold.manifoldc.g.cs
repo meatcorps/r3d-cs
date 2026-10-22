@@ -269,10 +269,6 @@ public static unsafe partial class Manifold
     [LibraryImport("manifoldc", EntryPoint = "manifold_smooth_by_normals")]
     public static partial ManifoldManifold SmoothByNormals(IntPtr mem, ManifoldManifold m, int normalIdx);
 
-    /// <remarks>Native: <c>manifold_smooth_out</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_smooth_out")]
-    public static partial ManifoldManifold SmoothOut(IntPtr mem, ManifoldManifold m, double minSharpAngle, double minSmoothness);
-
     /// <remarks>Native: <c>manifold_refine</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_refine")]
     public static partial ManifoldManifold Refine(IntPtr mem, ManifoldManifold m, int refine);
@@ -284,10 +280,6 @@ public static unsafe partial class Manifold
     /// <remarks>Native: <c>manifold_refine_to_tolerance</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_refine_to_tolerance")]
     public static partial ManifoldManifold RefineToTolerance(IntPtr mem, ManifoldManifold m, double tolerance);
-
-    /// <remarks>Native: <c>manifold_set_tolerance</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_set_tolerance")]
-    public static partial ManifoldManifold SetTolerance(IntPtr mem, ManifoldManifold m, double tolerance);
 
     /// <remarks>Native: <c>manifold_simplify</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_simplify")]
@@ -330,14 +322,6 @@ public static unsafe partial class Manifold
     [LibraryImport("manifoldc", EntryPoint = "manifold_of_meshgl64")]
     public static partial ManifoldManifold OfMeshgl64(IntPtr mem, ManifoldMeshGL64 mesh);
 
-    /// <remarks>Native: <c>manifold_smooth</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_smooth")]
-    public static partial ManifoldManifold Smooth(IntPtr mem, ManifoldMeshGL mesh, IntPtr* half_edges, double* smoothness, IntPtr n_idxs);
-
-    /// <remarks>Native: <c>manifold_smooth64</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_smooth64")]
-    public static partial ManifoldManifold Smooth64(IntPtr mem, ManifoldMeshGL64 mesh, IntPtr* half_edges, double* smoothness, IntPtr n_idxs);
-
     /// <remarks>Native: <c>manifold_extrude</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_extrude")]
     public static partial ManifoldManifold Extrude(IntPtr mem, ManifoldPolygons cs, double height, int slices, double twist_degrees, double scale_x, double scale_y);
@@ -354,9 +338,14 @@ public static unsafe partial class Manifold
     [LibraryImport("manifoldc", EntryPoint = "manifold_decompose")]
     public static partial ManifoldManifoldVec Decompose(IntPtr mem, ManifoldManifold m);
 
-    /// <remarks>Native: <c>manifold_as_original</c></remarks>
+    /// <summary>
+    /// id: the original ID to assign; pass a negative value (e.g. -1) for a new one.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>manifold_as_original</c>
+    /// </remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_as_original")]
-    public static partial ManifoldManifold AsOriginal(IntPtr mem, ManifoldManifold m);
+    public static partial ManifoldManifold AsOriginal(IntPtr mem, ManifoldManifold m, int id);
 
     /// <summary>
     /// Manifold Info
@@ -403,10 +392,6 @@ public static unsafe partial class Manifold
     /// <remarks>Native: <c>manifold_epsilon</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_epsilon")]
     public static partial double Epsilon(ManifoldManifold m);
-
-    /// <remarks>Native: <c>manifold_get_tolerance</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_get_tolerance")]
-    public static partial double GetTolerance(ManifoldManifold m);
 
     /// <remarks>Native: <c>manifold_num_prop_vert</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_num_prop_vert")]
@@ -470,6 +455,15 @@ public static unsafe partial class Manifold
     public static partial ManifoldRayHit RayHitVecGet(ManifoldRayHitVec v, IntPtr idx);
 
     /// <summary>
+    /// Point containment
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>manifold_winding_number</c>
+    /// </remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_winding_number")]
+    public static partial int WindingNumber(ManifoldManifold m, double x, double y, double z);
+
+    /// <summary>
     /// ExecutionContext: observe progress and request cancellation of a long-running Manifold evaluation. Attach to a manifold via manifold_with_context; subsequent operations on that manifold observe the context. Safe to read/write from any thread. See the ExecutionContext class in common.h for full semantics (sticky cancel, per-boolean granularity).
     /// </summary>
     /// <remarks>
@@ -491,7 +485,7 @@ public static unsafe partial class Manifold
     public static partial double ExecutionContextProgress(ManifoldExecutionContext ctx);
 
     /// <summary>
-    /// ctx-aware static factories. These ops have no source manifold to attach via manifold_with_context, so they run on the ExecutionContext directly to report progress / observe cancellation. Mirror manifold_level_set / manifold_of_meshgl / manifold_smooth; `sdf_context` is the SDF callback's user-data.
+    /// ctx-aware static factories. These ops have no source manifold to attach via manifold_with_context, so they run on the ExecutionContext directly to report progress / observe cancellation. Mirror manifold_level_set / manifold_of_meshgl; `sdf_context` is the SDF callback's user-data.
     /// </summary>
     /// <remarks>
     /// Native: <c>manifold_execution_context_level_set</c>
@@ -511,14 +505,6 @@ public static unsafe partial class Manifold
     [LibraryImport("manifoldc", EntryPoint = "manifold_execution_context_of_meshgl64")]
     public static partial ManifoldManifold ExecutionContextOfMeshgl64(IntPtr mem, ManifoldExecutionContext ec, ManifoldMeshGL64 mesh);
 
-    /// <remarks>Native: <c>manifold_execution_context_smooth</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_execution_context_smooth")]
-    public static partial ManifoldManifold ExecutionContextSmooth(IntPtr mem, ManifoldExecutionContext ec, ManifoldMeshGL mesh, IntPtr* half_edges, double* smoothness, IntPtr n_edges);
-
-    /// <remarks>Native: <c>manifold_execution_context_smooth64</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_execution_context_smooth64")]
-    public static partial ManifoldManifold ExecutionContextSmooth64(IntPtr mem, ManifoldExecutionContext ec, ManifoldMeshGL64 mesh, IntPtr* half_edges, double* smoothness, IntPtr n_edges);
-
     /// <summary>
     /// CrossSection Shapes/Constructors
     /// </summary>
@@ -534,11 +520,19 @@ public static unsafe partial class Manifold
 
     /// <remarks>Native: <c>manifold_cross_section_of_simple_polygon</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_of_simple_polygon")]
-    public static partial ManifoldCrossSection CrossSectionOfSimplePolygon(IntPtr mem, ManifoldSimplePolygon p, ManifoldFillRule fr);
+    public static partial ManifoldCrossSection CrossSectionOfSimplePolygon(IntPtr mem, ManifoldSimplePolygon p);
 
     /// <remarks>Native: <c>manifold_cross_section_of_polygons</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_of_polygons")]
-    public static partial ManifoldCrossSection CrossSectionOfPolygons(IntPtr mem, ManifoldPolygons p, ManifoldFillRule fr);
+    public static partial ManifoldCrossSection CrossSectionOfPolygons(IntPtr mem, ManifoldPolygons p);
+
+    /// <remarks>Native: <c>manifold_cross_section_even_odd_simple_polygon</c></remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_even_odd_simple_polygon")]
+    public static partial ManifoldCrossSection CrossSectionEvenOddSimplePolygon(IntPtr mem, ManifoldSimplePolygon p);
+
+    /// <remarks>Native: <c>manifold_cross_section_even_odd_polygons</c></remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_even_odd_polygons")]
+    public static partial ManifoldCrossSection CrossSectionEvenOddPolygons(IntPtr mem, ManifoldPolygons p);
 
     /// <remarks>Native: <c>manifold_cross_section_square</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_square")]
@@ -547,10 +541,6 @@ public static unsafe partial class Manifold
     /// <remarks>Native: <c>manifold_cross_section_circle</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_circle")]
     public static partial ManifoldCrossSection CrossSectionCircle(IntPtr mem, double radius, int circular_segments);
-
-    /// <remarks>Native: <c>manifold_cross_section_compose</c></remarks>
-    [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_compose")]
-    public static partial ManifoldCrossSection CrossSectionCompose(IntPtr mem, ManifoldCrossSectionVec csv);
 
     /// <remarks>Native: <c>manifold_cross_section_decompose</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_decompose")]
@@ -666,7 +656,7 @@ public static unsafe partial class Manifold
 
     /// <remarks>Native: <c>manifold_cross_section_simplify</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_simplify")]
-    public static partial ManifoldCrossSection CrossSectionSimplify(IntPtr mem, ManifoldCrossSection cs, double epsilon);
+    public static partial ManifoldCrossSection CrossSectionSimplify(IntPtr mem, ManifoldCrossSection cs, double tolerance);
 
     /// <remarks>Native: <c>manifold_cross_section_offset</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_cross_section_offset")]
@@ -840,11 +830,28 @@ public static unsafe partial class Manifold
     public static partial int BoxIsFinite(ManifoldBox b);
 
     /// <summary>
+    /// Version
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>manifold_version</c>
+    /// </remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_version")]
+    public static partial void Version(int* version);
+
+    /// <summary>
     /// Static Quality Globals
     /// </summary>
     /// <remarks>
-    /// Native: <c>manifold_set_min_circular_angle</c>
+    /// Native: <c>manifold_set_relative_precision</c>
     /// </remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_set_relative_precision")]
+    public static partial void SetRelativePrecision(double precision);
+
+    /// <remarks>Native: <c>manifold_get_relative_precision</c></remarks>
+    [LibraryImport("manifoldc", EntryPoint = "manifold_get_relative_precision")]
+    public static partial double GetRelativePrecision();
+
+    /// <remarks>Native: <c>manifold_set_min_circular_angle</c></remarks>
     [LibraryImport("manifoldc", EntryPoint = "manifold_set_min_circular_angle")]
     public static partial void SetMinCircularAngle(double degrees);
 
