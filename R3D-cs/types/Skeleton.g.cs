@@ -67,7 +67,13 @@ public unsafe struct Skeleton
     /// <remarks>
     /// Native: <c>rootBind</c>
     /// </remarks>
-    public Matrix4x4 RootBind;
+    private Matrix4x4 _rootBind;
+
+    public Matrix4x4 RootBind
+    {
+        get => Matrix4x4.Transpose(_rootBind);
+        set => _rootBind = Matrix4x4.Transpose(value);
+    }
 
     /// <summary>
     /// Texture ID that contains the bind pose for GPU skinning. This is a 1D Texture RGBA16F 4*boneCount.

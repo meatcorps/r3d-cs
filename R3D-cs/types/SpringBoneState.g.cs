@@ -36,7 +36,13 @@ public struct SpringBoneState
     /// <remarks>
     /// Native: <c>previousWorld</c>
     /// </remarks>
-    public Matrix4x4 PreviousWorld;
+    private Matrix4x4 _previousWorld;
+
+    public Matrix4x4 PreviousWorld
+    {
+        get => Matrix4x4.Transpose(_previousWorld);
+        set => _previousWorld = Matrix4x4.Transpose(value);
+    }
 
     /// <remarks>Native: <c>worldInitialized</c></remarks>
     public bool WorldInitialized;

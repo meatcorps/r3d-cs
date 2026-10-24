@@ -112,6 +112,18 @@ public unsafe struct Model
     /// </remarks>
     public Skeleton Skeleton;
 
+    /// <remarks>Native: <c>lights</c></remarks>
+    internal ImportedLight* _lights;
+
+    /// <remarks>Native: <c>lightCount</c></remarks>
+    internal int LightCount;
+
+    /// <remarks>Native: <c>instances</c></remarks>
+    internal ModelInstance* _instances;
+
+    /// <remarks>Native: <c>instanceCount</c></remarks>
+    internal int InstanceCount;
+
     /// <summary>
     /// <see cref="Meshes"/> as a <see cref="Span{T}"/>.
     /// </summary>
@@ -136,5 +148,15 @@ public unsafe struct Model
     /// <see cref="MeshMaterials"/> as a <see cref="Span{T}"/>.
     /// </summary>
     public Span<int> MeshMaterials => _meshMaterials != null ? new(_meshMaterials, MeshCount) : default;
+
+    /// <summary>
+    /// <see cref="Lights"/> as a <see cref="Span{T}"/>.
+    /// </summary>
+    public Span<ImportedLight> Lights => _lights != null ? new(_lights, LightCount) : default;
+
+    /// <summary>
+    /// <see cref="Instances"/> as a <see cref="Span{T}"/>.
+    /// </summary>
+    public Span<ModelInstance> Instances => _instances != null ? new(_instances, InstanceCount) : default;
 
 }

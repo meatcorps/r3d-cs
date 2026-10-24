@@ -110,6 +110,31 @@ public static unsafe partial class R3D
     public static partial void UnloadModel(Model model, [MarshalAs(UnmanagedType.I1)] bool unloadMaterials);
 
     /// <summary>
+    /// Returns the number of imported light definitions.
+    /// <para>
+    /// Imported lights are metadata only.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetModelLightCount</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetModelLightCount")]
+    public static partial int GetModelLightCount(Model model);
+
+    /// <summary>
+    /// Copies one imported light definition.
+    /// <para>
+    /// Returns false on invalid arguments. The returned value is independent of model lifetime.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetModelLight</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetModelLight")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetModelLight(Model model, int index, ref ImportedLight result);
+
+    /// <summary>
     /// Sets the default local-space animated culling bounds for a model.
     /// <para>
     /// Does not modify the imported model.aabb. Existing animated model draw functions use these bounds automatically.
@@ -143,6 +168,25 @@ public static unsafe partial class R3D
     /// </remarks>
     [LibraryImport(NativeLibName, EntryPoint = "R3D_GetModelMeshIndex", StringMarshalling = StringMarshalling.Utf8)]
     public static partial int GetModelMeshIndex(Model model, string meshName);
+
+    /// <summary>
+    /// Returns the number of imported mesh references.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetModelInstanceCount</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetModelInstanceCount")]
+    public static partial int GetModelInstanceCount(Model model);
+
+    /// <summary>
+    /// Retrieves an imported mesh reference. Returns false when the index is invalid.
+    /// </summary>
+    /// <remarks>
+    /// Native: <c>R3D_GetModelInstance</c>
+    /// </remarks>
+    [LibraryImport(NativeLibName, EntryPoint = "R3D_GetModelInstance")]
+    [return: MarshalAs(UnmanagedType.I1)]
+    public static partial bool GetModelInstance(Model model, int index, ref ModelInstance result);
 
     /// <summary>
     /// Returns a pointer to the mesh with the given name.

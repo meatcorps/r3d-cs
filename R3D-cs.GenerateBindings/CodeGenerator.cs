@@ -463,6 +463,24 @@ public class CodeGenerator(string outputDir)
                         sb.AppendLine($"    {finalAccess} {bufferType} {emitName};");
                         inlineArrays.Add((bufferType, emitType, fixedSize));
                     }
+                    else if (IsNativeRaylibMatrix(field.Type))
+                    {
+                        string backingName =
+                            $"_{char.ToLowerInvariant(fieldName[0])}{fieldName[1..]}";
+
+                        sb.AppendLine(
+                            $"    private Matrix4x4 {backingName};");
+                        sb.AppendLine();
+
+                        sb.AppendLine(
+                            $"    public Matrix4x4 {fieldName}");
+                        sb.AppendLine("    {");
+                        sb.AppendLine(
+                            $"        get => Matrix4x4.Transpose({backingName});");
+                        sb.AppendLine(
+                            $"        set => {backingName} = Matrix4x4.Transpose(value);");
+                        sb.AppendLine("    }");
+                    }
                     else
                     {
                         sb.AppendLine($"    {finalAccess} {emitType} {emitName};");
